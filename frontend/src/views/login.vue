@@ -2,6 +2,9 @@
     import { User, Lock } from '@element-plus/icons-vue'
     import {ref,reactive} from 'vue'
 
+    import { userStore } from '@/stores/user';
+
+    const store = userStore()
     // 表单配置
     const rules = {
         username: [
@@ -26,8 +29,8 @@
         if (!formEl) return
         formEl.validate( valid => {
             if (valid) {
-                // 验证通过
-                console.log('submit!')
+                // 验证通过，执行登录逻辑
+                store.loginAction(formData)
             }
         })
     }

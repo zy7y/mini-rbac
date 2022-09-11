@@ -28,5 +28,5 @@ class Msg(enum.Enum):
 
 class Response(GenericModel, Generic[T]):
     code: Status = Status.OK
-    msg: Union[Msg, str] = Msg.OK
     data: Optional[T]
+    msg: Union[Msg, str] = Msg.OK

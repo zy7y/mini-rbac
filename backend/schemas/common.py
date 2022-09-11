@@ -18,7 +18,7 @@ class LoginResult(BaseModel):
     """登录响应模型"""
 
     id: int = Field(..., description="用户ID")
-    access_token: str = Field(..., description="token 串")
+    token: str = Field(..., description="token 串")
     token_type: str = Field("Bearer", description="token 类型")
 
 

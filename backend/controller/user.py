@@ -1,16 +1,18 @@
 from core.resp import Response
 from core.router import Router
+from core.security import get_password_hash
 from dbhelper.user import get_user_info, get_users, insert_user
 from schemas.common import ListAll
 from schemas.user import UserAdd, UserInfo, UserList, UserQuery
 
-user = Router(prefix="/users", tags=["用户管理"])
+user = Router(prefix="/user", tags=["用户管理"])
 
 
 @user.post("", summary="用户添加")
 async def user_add(data: UserAdd) -> Response[UserInfo]:
     roles = data.rids
     del data.rids
+    user.password = get_password_hash(user.password)
     return await insert_user(data, roles)
 
 

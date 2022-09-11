@@ -1,34 +1,35 @@
 import axios from "axios";
-import {message, ElLoading} from 'element-plus'
-import userStore from '@/stores/user'
+import { ElMessage, ElLoading } from 'element-plus'
+import {userStore} from '@/stores/user'
 
-
-const store = userStore()
+let loading
 
 export default (config) => {
 
     const instance = axios.create({
         baseURL: import.meta.env.VITE_BASE_URL,
-        timeout: 5000,
+        timeout: 10000,
     })
 
     instance.interceptors.request.use(config => {
-        ElLoading.service({
-            title: '请求中.'
+        loading = ElLoading.service({
+            lock: true,
+            text: '请求中...',
+            background: 'rabg(0,0,0,0.7)'
         })
-        config.headers.Authorization = store.accessToken
+        config.headers.Authorization = userStore().accessToken
         return config
     })
 
     instance.interceptors.response.use(res => {
-        if (res.data.code !== 20000 ){
-            message.error(res.data.msg)
+        if (res.data.code !== 200 ){
+            ElMessage.error(res.data.msg)
         }
-        ElLoading.close()
+        loading.close()
         return res.data
     }, err => {
-        message.error(err)
-        ElLoading.close()
+        ElMessage.error(err)
+        loading.close()
         return Promise.reject(err)
     })
 

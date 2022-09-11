@@ -7,7 +7,7 @@ from models import UserModel, UserRoleModel
 from schemas.common import QueryData
 
 UserRead = pydantic_model_creator(UserModel, name="UserOut", exclude=("password",))
-UserIn = pydantic_model_creator(UserModel, name="UserIn", exclude_readonly=True)
+UserIn = pydantic_model_creator(UserModel, name="UserIn", exclude_readonly=True, exclude=("status",))
 
 UserRole = pydantic_model_creator(UserRoleModel, name="UserRole", exclude_readonly=True)
 
