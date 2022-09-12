@@ -1,10 +1,17 @@
 from pydantic import BaseModel, Field
-from tortoise.contrib.pydantic import pydantic_model_creator
 
-from models import RoleModel
-from schemas.common import ReadBase
+from schemas.common import QueryData, ReadBase
 
-RoleRed = pydantic_model_creator(RoleModel, name="RoleOut")
+
+class RoleMenuIn(BaseModel):
+    """角色 -分配菜单id"""
+
+    rid: int = Field(description="角色ID")
+    menus: list[int] = Field(description="菜单ID 列表")
+
+
+class RoleMenuRead(RoleMenuIn, ReadBase):
+    pass
 
 
 class RoleBasic(BaseModel):
@@ -16,9 +23,15 @@ class RoleIn(RoleBasic):
     pass
 
 
-class RoleRed(RoleBasic, ReadBase):
+class RoleRead(RoleBasic, ReadBase):
     pass
 
 
-class RoleInfo(RoleRed):
+class RoleInfo(RoleRead):
     pass
+
+
+class RoleQuery(QueryData):
+    """查询模型"""
+
+    name: str = Field("", description="角色名")

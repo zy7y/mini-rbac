@@ -1,7 +1,9 @@
-from tortoise.transactions import atomic
+from fastapi.encoders import jsonable_encoder
+from tortoise import connections
 
-from models import RoleModel, UserModel, UserRoleModel
-from schemas.user import UserIn, UserRole
+from dbhelper.role import get_role
+from models import UserModel, UserRoleModel
+from schemas import UserPut
 
 
 async def get_user(kwargs):
@@ -16,25 +18,21 @@ async def get_user(kwargs):
     return await UserModel.filter(**kwargs).first()
 
 
-async def get_user_info(pk: int):
+async def get_user_info(user: UserModel):
     """
-    根据id查用户角色列表,当前激活角色
+    根据id查用户角色列表 按激活角色倒序显示
     """
-    user = await UserModel.get(pk=pk).values(
-        "id", "username", "nickname", "identity", "created", "modified"
+    db = connections.get("default")
+    sql_result = await db.execute_query_dict(
+        """
+        select r.id, r.name, ur.status from sys_role as r 
+        left join sys_user_role as ur on r.id = ur.rid where
+         ur.uid = (?) and ur.status != 9  and r.status != 9 order by ur.status desc
+        """,
+        [user.id],
     )
-    role = (
-        await UserRoleModel.filter(uid=pk, status__not_in=[9, 5])
-        .all()
-        .values("rid", "status")
-    )
-    active_rid = role[0].get("rid")
-    rids = []
-    for obj in role:
-        if obj.get("status") == 5:
-            active_rid = obj.get("rid")
-        rids.append(obj.get("rid"))
-    return {**user, "active_rid": active_rid, "rids": rids}
+
+    return {**jsonable_encoder(user), "roles": sql_result}
 
 
 async def get_users(skip: int, limit: int, kwargs: dict = None):
@@ -58,22 +56,51 @@ async def get_users(skip: int, limit: int, kwargs: dict = None):
     return await result.offset(skip).limit(limit), await result.count()
 
 
-@atomic()
 async def insert_user(user, roles):
-    for index, rid in enumerate(roles):
-        # 1. 查角色表是否有该角色
-        await RoleModel.get(pk=rid)
-        # 创建用户
-        obj = await UserModel.create(**user.dict())
+    """新增用户，选择角色"""
+    for role in roles:
+        if await get_role({"id": role.rid, "status__not": 9}) is None:
+            return role.rid
 
-        user_role = UserRole(rid=rid, uid=obj.id)
-        if index == 0:
-            user_role.status = 5
-        # 第一个角色默认, 添加到关系表
-        await UserRoleModel.create(**user_role.dict())
-    return user
+    # 创建用户
+    obj = await UserModel.create(**user.dict())
+
+    await UserRoleModel.bulk_create(
+        [UserRoleModel(rid=role.rid, uid=obj.id, status=role.status) for role in roles]
+    )
+    return obj
 
 
-async def new_user(user: UserIn):
-    """新增用户"""
-    return await UserModel.create(**user.dict())
+async def del_user(uid: int):
+    """删除用户"""
+    return await UserModel.filter(id=uid).update(status=9)
+
+
+async def put_user(uid: int, data: UserPut):
+    """更新用户"""
+    from core.security import get_password_hash
+
+    roles = data.rids
+    del data.rids
+    for role in roles:
+        if await get_role({"id": role.rid, "status__not": 9}) is None:
+            return role.rid
+
+    # 更新用户
+    data.password = get_password_hash(data.password)
+    await UserModel.filter(id=uid).update(**data.dict())
+
+    # todo 1. 先前有的角色，这次更新成没有 2. 先前没有的角色 这次更新成有， 3. 只更新了状态
+
+    db = connections.get("default")
+    # 1. 先把所有数据做删除
+    await db.execute_query_dict(
+        """
+    update sys_user_role set status = 9 where uid = (?)
+    """,
+        [uid],
+    )
+    # 2. 新增次此更新的数据
+    await UserRoleModel.bulk_create(
+        [UserRoleModel(uid=uid, **role.dict()) for role in roles]
+    )

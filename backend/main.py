@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
 from core.events import close_orm, init_orm
-from core.log import logger_db_client as logger
+from core.log import logger
 from core.middleware import middlewares
 from router.url import routes
 
