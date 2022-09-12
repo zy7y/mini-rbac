@@ -24,28 +24,3 @@ def list_to_tree(
         else:
             arr.append(menu)
     return arr
-
-
-def menu_table():
-    """生成菜单表数据"""
-    from models import MenuModel
-    MenuModel.bulk_create([
-        MenuModel(name="系统管理",
-                  meta={"icon": "Grid"},
-                  path="/system",
-                  type=0),
-        MenuModel(name="系统设置",
-                  meta={"icon": "Setting"},
-                  path="/setting",
-                  type=0),
-        MenuModel(name="菜单管理",
-                  meta={"icon": "Menu"},
-                  path="/system/menu",
-                  type=1,
-                  component="/system/menu",
-                  pid=1,
-                  api="/menu",
-                  method="{'GET}",
-                  regx="^/menu$"
-                  )
-    ])

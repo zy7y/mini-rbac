@@ -140,3 +140,5 @@ cython_debug/
 .idea
 .pdm.toml
 __pypackages__/
+.pytest_cache
+.db-*

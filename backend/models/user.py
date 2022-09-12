@@ -1,4 +1,3 @@
-from core.enums import UserType
 from core.table import Table, fields
 
 
@@ -16,4 +15,3 @@ class UserModel(Table):
         table_description = "用户表"
         # 索引
         unique_together = ("username",)
-

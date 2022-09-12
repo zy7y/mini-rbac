@@ -1,7 +1,5 @@
 from tortoise import fields, models
 
-from core.enums import Status
-
 
 class Table(models.Model):
     """
@@ -9,7 +7,7 @@ class Table(models.Model):
     """
 
     id = fields.IntField(pk=True, description="主键")
-    status = fields.IntEnumField(Status, description="状态", default=Status.ACTIVE)
+    status = fields.SmallIntField(default=1, description="状态 1有效 9 删除 5选中")
     created = fields.DatetimeField(auto_now_add=True, description="创建时间", null=True)
     modified = fields.DatetimeField(auto_now=True, description="更新时间", null=True)
 

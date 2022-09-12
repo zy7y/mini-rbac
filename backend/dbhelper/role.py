@@ -1,5 +1,8 @@
 from tortoise import connections
 
+from models import RoleModel
+from schemas.role import RoleIn
+
 
 async def get_role_menus(rid: int):
     """
@@ -13,3 +16,8 @@ async def get_role_menus(rid: int):
         AND sys_role_menu.rid = (%s) AND m.`status` = 1 ORDER BY m.sort""",
         [rid],
     )
+
+
+async def new_role(role: RoleIn):
+    """新增角色"""
+    return await RoleModel.create(**role.dict())

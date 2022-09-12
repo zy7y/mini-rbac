@@ -1,8 +1,7 @@
 from tortoise.transactions import atomic
 
-from core.enums import Status
 from models import RoleModel, UserModel, UserRoleModel
-from schemas.user import UserRole
+from schemas.user import UserIn, UserRole
 
 
 async def get_user(kwargs):
@@ -32,13 +31,13 @@ async def get_user_info(pk: int):
     active_rid = role[0].get("rid")
     rids = []
     for obj in role:
-        if obj.get("status") == Status.SELECTED:
+        if obj.get("status") == 5:
             active_rid = obj.get("rid")
         rids.append(obj.get("rid"))
     return {**user, "active_rid": active_rid, "rids": rids}
 
 
-async def get_users(skip: int, limit: int, kwargs: dict):
+async def get_users(skip: int, limit: int, kwargs: dict = None):
     """
     分页获取用户并且支持字段模糊查询
     Args:
@@ -49,7 +48,10 @@ async def get_users(skip: int, limit: int, kwargs: dict):
     Returns:
 
     """
-    kwargs = {f"{k}__contains": v for k, v in kwargs.items()}
+    if kwargs is not None:
+        kwargs = {f"{k}__contains": v for k, v in kwargs.items()}
+    else:
+        kwargs = {}
     result = (
         UserModel.filter(status__not_in=[9, 5], **kwargs).all().order_by("-created")
     )
@@ -66,7 +68,12 @@ async def insert_user(user, roles):
 
         user_role = UserRole(rid=rid, uid=obj.id)
         if index == 0:
-            user_role.status = Status.SELECTED
+            user_role.status = 5
         # 第一个角色默认, 添加到关系表
         await UserRoleModel.create(**user_role.dict())
     return user
+
+
+async def new_user(user: UserIn):
+    """新增用户"""
+    return await UserModel.create(**user.dict())

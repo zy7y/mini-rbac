@@ -1,15 +1,27 @@
 from typing import List, Optional
 
-from pydantic import Field
+from pydantic import BaseModel, Field
 from tortoise.contrib.pydantic import pydantic_model_creator
 
-from models import UserModel, UserRoleModel
+from models import UserRoleModel
 from schemas.common import QueryData
 
-UserRead = pydantic_model_creator(UserModel, name="UserOut", exclude=("password",))
-UserIn = pydantic_model_creator(UserModel, name="UserIn", exclude_readonly=True, exclude=("status",))
-
 UserRole = pydantic_model_creator(UserRoleModel, name="UserRole", exclude_readonly=True)
+
+from core import ReadBase
+
+
+class UserBasic(BaseModel):
+    username: str
+    nickname: str
+
+
+class UserIn(UserBasic):
+    password: str
+
+
+class UserRead(UserBasic, ReadBase):
+    pass
 
 
 class UserInfo(UserRead):
