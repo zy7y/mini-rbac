@@ -1,4 +1,4 @@
-from core.table import Table, fields
+from models.common import Table, fields
 
 
 class RoleRelationMixin:

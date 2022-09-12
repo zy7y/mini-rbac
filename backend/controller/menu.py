@@ -1,6 +1,5 @@
-from core import Response
 from dbhelper.menu import insert_menu
-from schemas.menu import MenuIn, MenuRead
+from schemas import MenuIn, MenuRead, Response
 
 
 async def menu_add(data: MenuIn) -> Response[MenuRead]:

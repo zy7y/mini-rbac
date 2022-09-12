@@ -1,10 +1,26 @@
 """公共模型"""
-from typing import Generic, TypeVar
+from datetime import datetime
+from typing import Generic, Optional, TypeVar
 
 from pydantic import BaseModel, Field
 from pydantic.generics import GenericModel
 
 T = TypeVar("T")
+
+
+class Response(GenericModel, Generic[T]):
+    code: int = 200
+    data: Optional[T]
+    msg: str = "请求成功"
+
+
+class ReadBase(BaseModel):
+    """数据读取的基类"""
+
+    id: int
+    status: int = Field(default=1, description="数据状态 1正常默认值 9 删除 5使用中 ")
+    created: datetime
+    modified: datetime
 
 
 class LoginForm(BaseModel):

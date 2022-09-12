@@ -1,9 +1,8 @@
 import json
 
-from core import Response
 from core.utils import list_to_tree
 from dbhelper.role import get_role_menus, new_role
-from schemas.role import RoleIn, RoleInfo
+from schemas import Response, RoleIn, RoleInfo
 
 
 async def role_add(data: RoleIn) -> Response[RoleInfo]:

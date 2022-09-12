@@ -1,7 +1,6 @@
-from core import Response
 from core.security import generate_token, verify_password
 from dbhelper.user import get_user
-from schemas.common import LoginForm, LoginResult
+from schemas import LoginForm, LoginResult, Response
 
 
 async def login(auth_data: LoginForm) -> Response[LoginResult]:

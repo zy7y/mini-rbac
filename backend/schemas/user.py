@@ -8,7 +8,7 @@ from schemas.common import QueryData
 
 UserRole = pydantic_model_creator(UserRoleModel, name="UserRole", exclude_readonly=True)
 
-from core import ReadBase
+from schemas.common import ReadBase
 
 
 class UserBasic(BaseModel):

@@ -1,8 +1,108 @@
+from typing import Any, Callable, get_type_hints
+
+from fastapi import routing
+
 from controller.common import login
 from controller.menu import menu_add
 from controller.role import role_add, role_has_menu
 from controller.user import create_user, user_arr, user_info, user_list
-from core import Route
+
+
+class Route(routing.APIRoute):
+    """
+    https://github.com/tiangolo/fastapi/issues/620
+    Django挂载视图方法
+    def index() -> User:
+        pass
+    Route("/", endpoint=index)
+    """
+
+    def __init__(
+        self,
+        path: str,
+        endpoint: Callable[..., Any],
+        tags: list[str],
+        summary: str,
+        **kwargs: Any
+    ):
+        if kwargs.get("response_model") is None:
+            kwargs["response_model"] = get_type_hints(endpoint).get("return")
+        super(Route, self).__init__(
+            path=path, endpoint=endpoint, tags=tags, summary=summary, **kwargs
+        )
+
+    @classmethod
+    def post(
+        cls,
+        path: str,
+        endpoint: Callable[..., Any],
+        tags: list[str],
+        summary: str,
+        **kwargs: Any
+    ):
+        return Route(
+            path=path,
+            endpoint=endpoint,
+            methods=["POST"],
+            tags=tags,
+            summary=summary,
+            **kwargs
+        )
+
+    @classmethod
+    def get(
+        cls,
+        path: str,
+        endpoint: Callable[..., Any],
+        tags: list[str],
+        summary: str,
+        **kwargs: Any
+    ):
+        return Route(
+            path=path,
+            endpoint=endpoint,
+            methods=["GET"],
+            tags=tags,
+            summary=summary,
+            **kwargs
+        )
+
+    @classmethod
+    def delete(
+        cls,
+        path: str,
+        endpoint: Callable[..., Any],
+        tags: list[str],
+        summary: str,
+        **kwargs: Any
+    ):
+        return Route(
+            path=path,
+            endpoint=endpoint,
+            methods=["DELETE"],
+            tags=tags,
+            summary=summary,
+            **kwargs
+        )
+
+    @classmethod
+    def put(
+        cls,
+        path: str,
+        endpoint: Callable[..., Any],
+        tags: list[str],
+        summary: str,
+        **kwargs: Any
+    ):
+        return Route(
+            path=path,
+            endpoint=endpoint,
+            methods=["PUT"],
+            tags=tags,
+            summary=summary,
+            **kwargs
+        )
+
 
 routes = [
     Route.post("/login", endpoint=login, tags=["公共"], summary="登录"),

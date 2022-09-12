@@ -1,8 +1,8 @@
 from pydantic import BaseModel, Field
 from tortoise.contrib.pydantic import pydantic_model_creator
 
-from core import ReadBase
 from models import RoleModel
+from schemas.common import ReadBase
 
 RoleRed = pydantic_model_creator(RoleModel, name="RoleOut")
 
