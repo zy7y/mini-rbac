@@ -4,10 +4,15 @@ from fastapi import Query
 
 from core.utils import list_to_tree
 from dbhelper.relation import role_assigned_menu
-from dbhelper.role import (del_role, get_role, get_role_menus, get_roles,
-                           new_role, put_role)
-from schemas import (ListAll, Response, RoleIn, RoleInfo, RoleMenuIn,
-                     RoleQuery, RoleRead)
+from dbhelper.role import (
+    del_role,
+    get_role,
+    get_role_menus,
+    get_roles,
+    new_role,
+    put_role,
+)
+from schemas import ListAll, Response, RoleIn, RoleInfo, RoleMenuIn, RoleQuery, RoleRead
 
 
 async def role_add(data: RoleIn) -> Response[RoleInfo]:

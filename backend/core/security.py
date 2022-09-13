@@ -74,7 +74,7 @@ async def check_permissions(request: Request, user: UserModel = Depends(check_to
     whitelist = [f"/user/{user.id}", f"/role/{active_rid}/menu"]
     flag = request.url.path in whitelist and request.method == "GET"
     if flag:
-        return
+        return user
 
     api = request.url.path
     for k, v in request.path_params.items():

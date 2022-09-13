@@ -1,0 +1,69 @@
+<script setup>
+import { ref, computed } from "vue";
+import { userStore } from "@/stores/user";
+
+const store = userStore();
+
+const loading = ref(false);
+const visible = ref(false);
+
+const currentRoleId = ref(store.userInfo.roles[0].id);
+
+// 角色列表选项
+const options = computed(() => {
+  return store.userInfo.roles.map((role) => ({
+    label: role.name,
+    value: role.id,
+  }));
+});
+
+const showModal = () => {
+  visible.value = true;
+};
+
+const handleOk = () => {
+  loading.value = true;
+  store.userSelectRole(currentRoleId.value);
+  setTimeout(() => {
+    loading.value = false;
+    visible.value = false;
+  }, 1000);
+};
+
+const handleCancel = () => {
+  visible.value = false;
+};
+
+defineExpose({
+  showModal,
+});
+</script>
+
+<template>
+  <div class="select-role">
+    <a-modal v-model:visible="visible" title="切换角色" @ok="handleOk">
+      <template #footer>
+        <a-button key="back" @click="handleCancel">取消</a-button>
+        <a-button
+          key="submit"
+          type="primary"
+          :loading="loading"
+          @click="handleOk"
+          >确定</a-button
+        >
+      </template>
+      <span>选择角色：</span>
+
+      <a-space direction="vertical">
+        <a-select
+          v-model:value="currentRoleId"
+          size="default"
+          style="width: 400px"
+          :options="options"
+        ></a-select>
+      </a-space>
+    </a-modal>
+  </div>
+</template>
+
+<style scoped></style>

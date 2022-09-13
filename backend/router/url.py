@@ -4,10 +4,24 @@ from fastapi import Depends, routing
 
 from controller.common import about, login
 from controller.menu import menu_add, menu_arr, menu_del, menu_put
-from controller.role import (assigned_menu, role_add, role_arr, role_del,
-                             role_has_menu, role_put, role_query)
-from controller.user import (user_add, user_arr, user_del, user_info,
-                             user_list, user_put)
+from controller.role import (
+    assigned_menu,
+    role_add,
+    role_arr,
+    role_del,
+    role_has_menu,
+    role_put,
+    role_query,
+)
+from controller.user import (
+    user_add,
+    user_arr,
+    user_del,
+    user_info,
+    user_list,
+    user_put,
+    user_select_role,
+)
 from core.security import check_permissions
 
 
@@ -107,9 +121,7 @@ class Route(routing.APIRoute):
         )
 
 
-has_perm = {
-    # "dependencies": [Depends(check_permissions)]
-}
+has_perm = {"dependencies": [Depends(check_permissions)]}
 
 routes = [
     Route.post("/login", endpoint=login, tags=["公共"], summary="登录"),
@@ -128,6 +140,9 @@ routes = [
     ),
     Route.post(
         "/user/query", endpoint=user_list, tags=["用户管理"], summary="用户列表查询", **has_perm
+    ),
+    Route.put(
+        "/user/role/{rid}", endpoint=user_select_role, tags=["用户管理"], summary="用户切换角色"
     ),
     # 角色管理,
     Route.get("/role", endpoint=role_arr, tags=["角色管理"], summary="角色列表", **has_perm),

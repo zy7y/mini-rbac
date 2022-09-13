@@ -28,4 +28,3 @@ async def menu_put(pk: int, data: MenuIn) -> Response:
     if await put_menu(pk, data) == 0:
         return Response(code=400, msg="菜单不存在")
     return Response()
-

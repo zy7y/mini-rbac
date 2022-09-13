@@ -1,17 +1,15 @@
 <script setup>
 import { ref } from "vue";
-import router from "@/router";
-
-import { userStore } from "@/stores/user";
 
 import SiderMenu from "@/components/layout/sider-menu.vue";
-const store = userStore();
+import LayoutHeader from "@/components/layout/layout-header.vue";
 
+// a-ayout-sider 折叠状态响应式数据
 const collapsed = ref(false);
 
-const logout = () => {
-  store.$reset();
-  router.push("/login");
+// header组件 折叠按钮事件 触发a-layout-sider折叠
+const changeSiderFold = (subValue) => {
+  collapsed.value = subValue;
 };
 </script>
 
@@ -25,7 +23,7 @@ const logout = () => {
       <a-layout>
         <a-layout-header style="background: #fff; padding: 0">
           <!-- 页头 -->
-          <a-button @click="logout">退出</a-button>
+          <LayoutHeader @changeFold="changeSiderFold" />
         </a-layout-header>
         <!-- 面包屑 -->
         <a-layout-content

@@ -4,7 +4,7 @@ import { message } from "ant-design-vue";
 
 import router from "@/router";
 import { loadRouter, loadDefaultMenu } from "@/utils/loadCpn";
-import { getMenus, getUserInfo, login } from "@/service/user";
+import { getMenus, getUserInfo, login, selectRole } from "@/service/user";
 
 export const userStore = defineStore(
   "user",
@@ -28,14 +28,13 @@ export const userStore = defineStore(
       userMenus.value = [];
     };
 
-    // 非setup语法时的actions
-    const loginAction = async (data) => {
-      // 1. 登录
-      const res = await login(data);
-      token.value = res.data.token;
-
+    /**
+     * 获取用户信息 & 菜单路由
+     * @param {*} uid 用户id
+     */
+    const getUserData = async (uid) => {
       // 2. 获取用户信息
-      const info = await getUserInfo(res.data.id);
+      const info = await getUserInfo(uid);
       userInfo.value = info.data;
 
       // 3. 获取权限信息
@@ -55,7 +54,13 @@ export const userStore = defineStore(
       } else {
         router.push("/main");
       }
+    };
 
+    const loginAction = async (data) => {
+      // 1. 登录
+      const res = await login(data);
+      token.value = res.data.token;
+      await getUserData(res.data.id);
       // 弹框提示登录成功
       message.success("登录成功.");
     };
@@ -63,6 +68,13 @@ export const userStore = defineStore(
     // loadRouter 刷新问题
     const loadRoleRouter = () => {
       loadRouter(userMenus.value);
+    };
+
+    // 切换角色
+    const userSelectRole = async (rid) => {
+      await selectRole(rid);
+      // 重新拿用户信息
+      await getUserData(userInfo.value.id);
     };
 
     return {
@@ -75,6 +87,7 @@ export const userStore = defineStore(
       $reset,
       loginAction,
       loadRoleRouter,
+      userSelectRole,
     };
   },
   {

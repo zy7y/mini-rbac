@@ -1,8 +1,16 @@
-from fastapi import Query
+from fastapi import Depends, Query
+from starlette.requests import Request
 
-from core.security import get_password_hash
-from dbhelper.user import (del_user, get_user, get_user_info, get_users,
-                           insert_user, put_user)
+from core.security import check_token, get_password_hash
+from dbhelper.user import (
+    del_user,
+    get_user,
+    get_user_info,
+    get_users,
+    insert_user,
+    put_user,
+    select_role,
+)
 from schemas import Response, UserAdd, UserInfo, UserPut, UserQuery, UserRead
 from schemas.common import ListAll
 
@@ -62,4 +70,12 @@ async def user_put(pk: int, data: UserPut) -> Response:
     result = await put_user(pk, data)
     if isinstance(result, int):
         return Response(code=400, msg=f"角色不存在{result}")
+    return Response()
+
+
+async def user_select_role(rid: int, user=Depends(check_token)):
+    """用户切换角色"""
+    res = await select_role(user.id, rid)
+    if res == 0:
+        return Response(code=400, msg=f"角色不存在{res}")
     return Response()

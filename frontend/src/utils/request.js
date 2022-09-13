@@ -25,7 +25,15 @@ export default (config) => {
     },
     (err) => {
       userStore().isLoading = !userStore().isLoading;
-      message.error(err);
+      if (err.response.data?.msg) {
+        message.error(err.response.data.msg);
+      } else if (err.response.data?.detail) {
+        // 请求参数缺失
+        message.error(err.response.data?.detail[0].msg);
+      } else {
+        message.error(err.message);
+      }
+
       return Promise.reject(err);
     }
   );

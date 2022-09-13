@@ -104,3 +104,9 @@ async def put_user(uid: int, data: UserPut):
     await UserRoleModel.bulk_create(
         [UserRoleModel(uid=uid, **role.dict()) for role in roles]
     )
+
+
+async def select_role(uid: int, rid: int):
+    """用户切换角色"""
+    await UserRoleModel.filter(uid=uid, rid__not=rid).update(status=1)
+    return await UserRoleModel.filter(uid=uid, rid=rid).update(status=5)

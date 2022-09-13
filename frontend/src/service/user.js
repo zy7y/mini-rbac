@@ -21,3 +21,11 @@ export function getMenus(rid) {
     url: `/role/${rid}/menu`,
   });
 }
+
+// 修改用户信息
+export function selectRole(rid) {
+  return request({
+    url: `/user/role/${rid}`,
+    method: "put",
+  });
+}

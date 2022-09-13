@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { message } from "ant-design-vue";
 import { userStore } from "@/stores/user";
-import { loadRouter } from "@/utils/loadCpn";
 
 const routes = [
   {

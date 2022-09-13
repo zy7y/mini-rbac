@@ -309,20 +309,6 @@ params = [
             method="DELETE",
         ).dict(),
     ),
-    (
-        "/menu",
-        MenuIn(
-            name="修改菜单",
-            meta={"icon": "Update"},
-            path=None,
-            type=2,
-            component=None,
-            pid=5,
-            identifier="menu:update",
-            api="/menu/{pk}",
-            method="PUT",
-        ).dict(),
-    ),
     # 分配权限
     (
         "/role/assigned/menu",
