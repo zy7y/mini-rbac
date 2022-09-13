@@ -1,8 +1,10 @@
 import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 import { message } from "ant-design-vue";
-import { getMenus, getUserInfo, login } from "@/service/user";
+
 import router from "@/router";
+import { loadRouter, loadDefaultMenu } from "@/utils/loadCpn";
+import { getMenus, getUserInfo, login } from "@/service/user";
 
 export const userStore = defineStore(
   "user",
@@ -10,6 +12,8 @@ export const userStore = defineStore(
     const token = ref("");
     const userInfo = ref({});
     const userMenus = ref([]);
+
+    const selectKey = ref(null);
 
     const isLoading = ref(false);
 
@@ -38,11 +42,27 @@ export const userStore = defineStore(
       const menus = await getMenus(info.data.roles[0].id);
       userMenus.value = menus.data;
 
+      // 3.1 加载权限
+      loadRouter(menus.data);
+
+      // 3.2 默认跳转路由
+      const defaultMenu = loadDefaultMenu(menus.data);
+
+      selectKey.value = [defaultMenu.id];
       // 4. 跳转
-      router.push("/main");
+      if (defaultMenu.path) {
+        router.push(defaultMenu.path);
+      } else {
+        router.push("/main");
+      }
 
       // 弹框提示登录成功
       message.success("登录成功.");
+    };
+
+    // loadRouter 刷新问题
+    const loadRoleRouter = () => {
+      loadRouter(userMenus.value);
     };
 
     return {
@@ -51,31 +71,13 @@ export const userStore = defineStore(
       userInfo,
       userMenus,
       isLoading,
+      selectKey,
       $reset,
       loginAction,
+      loadRoleRouter,
     };
   },
   {
-    persist: true, // 解决pinia刷新时数据丢失问题
+    persist: true,
   }
 );
-
-// export const userStore = defineStore('user',{
-//     state: () => ({
-//         token: ""
-//     }),
-//     getters: {
-//         accessToken() {
-//             return `Bearer ${this.token}`
-//         }
-//     },
-//     actions: {
-//       async loginAction(data){
-//         const res = await login(data)
-//         console.log(res)
-//         this.token = res.data.token
-//         // uid.value = res.data.id
-//       }
-//     },
-//     persist: true
-// })

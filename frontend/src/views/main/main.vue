@@ -25,7 +25,7 @@ const logout = () => {
       <a-layout>
         <a-layout-header style="background: #fff; padding: 0">
           <!-- 页头 -->
-          <a-button @click="logout"></a-button>
+          <a-button @click="logout">退出</a-button>
         </a-layout-header>
         <!-- 面包屑 -->
         <a-layout-content

@@ -2,25 +2,32 @@
 import { useRouter } from "vue-router";
 import { userStore } from "@/stores/user";
 import { loadIconCpn } from "@/utils/loadCpn";
+import { ref } from "vue";
 
 const store = userStore();
+const router = useRouter();
+
+// 菜单点击事件
+const menuClick = (menu) => {
+  router.push(menu.path);
+};
 </script>
 
 <template>
   <div class="sider-menu">
     <div class="logo"></div>
-    <a-menu theme="dark" mode="inline">
+    <a-menu theme="dark" mode="inline" v-model:selectedKeys="store.selectKey">
       <template v-for="menu in store.userMenus" :key="menu.id">
         <!-- 0 目录 顶层菜单 -->
         <template v-if="menu.type === 0">
-          <a-sub-menu :key="`${menu.id}`">
+          <a-sub-menu :key="menu.id">
             <template #icon>
               <component :is="loadIconCpn(menu.meta.icon)"></component>
             </template>
             <template #title>{{ menu.name }}</template>
             <!-- 1 组件 子菜单项 -->
             <template v-for="sub in menu.children" :key="sub.id">
-              <a-menu-item>
+              <a-menu-item @click="menuClick(sub)">
                 <template #icon>
                   <component :is="loadIconCpn(sub.meta.icon)"></component>
                 </template>
@@ -36,6 +43,7 @@ const store = userStore();
 
 <style scoped>
 .logo {
+  display: flex;
   height: 32px;
   background: rgba(255, 255, 255, 0.3);
   margin: 16px;
