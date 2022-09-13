@@ -51,7 +51,6 @@ params = [
             identifier=None,
             api=None,
             method=None,
-            regx=None,
         ).dict(),
     ),
     (
@@ -66,7 +65,6 @@ params = [
             identifier=None,
             api=None,
             method=None,
-            regx=None,
         ).dict(),
     ),
     # 组件
@@ -81,8 +79,7 @@ params = [
             pid=1,
             identifier=None,
             api="/user",
-            method="{'GET'}",
-            regx="^/user$",
+            method="GET",
         ).dict(),
     ),
     (
@@ -96,8 +93,7 @@ params = [
             pid=1,
             identifier=None,
             api="/role",
-            method="{'GET'}",
-            regx="^/role$",
+            method="GET",
         ).dict(),
     ),
     (
@@ -111,8 +107,7 @@ params = [
             pid=1,
             identifier=None,
             api="/menu",
-            method="{'GET'}",
-            regx="^/menu$",
+            method="GET",
         ).dict(),
     ),
     (
@@ -126,8 +121,7 @@ params = [
             pid=2,
             identifier=None,
             api="/about",
-            method="{'GET'}",
-            regx="^/about",
+            method="GET",
         ).dict(),
     ),
     # 按钮
@@ -142,8 +136,7 @@ params = [
             pid=3,
             identifier="user:create",
             api="/user",
-            method="{'POST'}",
-            regx="^/user$",
+            method="POST",
         ).dict(),
     ),
     (
@@ -157,8 +150,7 @@ params = [
             pid=3,
             identifier="user:delete",
             api="/user/{pk}",
-            method="{'DELETE'}",
-            regx="^/user/(?P<pk>[^/]+)$",
+            method="DELETE",
         ).dict(),
     ),
     (
@@ -172,8 +164,7 @@ params = [
             pid=3,
             identifier="user:update",
             api="/user/{pk}",
-            method="{'PUT'}",
-            regx="^/user/(?P<pk>[^/]+)$",
+            method="PUT",
         ).dict(),
     ),
     (
@@ -187,8 +178,7 @@ params = [
             pid=3,
             identifier="user:get",
             api="/user/{pk}",
-            method="{'GET'}",
-            regx="^/user/(?P<pk>[^/]+)$",
+            method="GET",
         ).dict(),
     ),
     (
@@ -202,8 +192,7 @@ params = [
             pid=3,
             identifier="user:query",
             api="/user/query",
-            method="{'POST'}",
-            regx="^/user/query$",
+            method="POST",
         ).dict(),
     ),
     # 角色管理
@@ -218,8 +207,7 @@ params = [
             pid=4,
             identifier="role:create",
             api="/role",
-            method="{'POST'}",
-            regx="^/role$",
+            method="POST",
         ).dict(),
     ),
     (
@@ -233,8 +221,7 @@ params = [
             pid=4,
             identifier="role:delete",
             api="/role/{pk}",
-            method="{'DELETE'}",
-            regx="^/role/(?P<pk>[^/]+)$",
+            method="DELETE",
         ).dict(),
     ),
     (
@@ -248,8 +235,7 @@ params = [
             pid=4,
             identifier=None,
             api="/role/{rid}/menu",
-            method="{'GET'}",
-            regx="^/role/(?P<rid>[^/]+)/menu$",
+            method="GET",
         ).dict(),
     ),
     (
@@ -263,8 +249,7 @@ params = [
             pid=4,
             identifier="",
             api="/role/query",
-            method="{'POST'}",
-            regx="^/role/query$",
+            method="POST",
         ).dict(),
     ),
     (
@@ -278,8 +263,7 @@ params = [
             pid=4,
             identifier="role:assign",
             api="/role/assigned/menu",
-            method="{'POST'}",
-            regx="^/role/assigned/menu$",
+            method="POST",
         ).dict(),
     ),
     (
@@ -293,8 +277,7 @@ params = [
             pid=4,
             identifier="role:update",
             api="/role",
-            method="{'PUT'}",
-            regx="^/role$",
+            method="PUT",
         ).dict(),
     ),
     # 菜单管理的权限
@@ -309,8 +292,7 @@ params = [
             pid=5,
             identifier="menu:create",
             api="/menu",
-            method="{'POST'}",
-            regx="^/menu$",
+            method="POST",
         ).dict(),
     ),
     (
@@ -324,8 +306,7 @@ params = [
             pid=5,
             identifier="menu:delete",
             api="/menu/{pk}",
-            method="{'DELETE'}",
-            regx="/menu/(?P<pk>[^/]+)$",
+            method="DELETE",
         ).dict(),
     ),
     # 分配权限
@@ -333,7 +314,7 @@ params = [
         "/role/assigned/menu",
         RoleMenuIn(rid=1, menus=[num for num in range(1, 20)]).dict(),
     ),
-    ("/role/assigned/menu", RoleMenuIn(rid=2, menus=[3, 7, 8, 9, 10, 11]).dict()),
+    ("/role/assigned/menu", RoleMenuIn(rid=2, menus=[1, 3, 7, 8, 9, 11]).dict()),
 ]
 
 

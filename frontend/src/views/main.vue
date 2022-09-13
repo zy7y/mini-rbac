@@ -1,5 +1,12 @@
 <script setup>
+    import router from '@/router';
+import { userStore } from '@/stores/user';
+    const store = userStore()
 
+    const logout = () => {
+        store.$reset()
+        router.push('/login')
+    }
 </script>
 
 <template>
@@ -7,7 +14,9 @@
         <el-container>
       <el-aside width="200px">Aside</el-aside>
       <el-container>
-        <el-header>Header</el-header>
+        <el-header>Header <el-button @click="logout">
+            注销
+        </el-button></el-header>
         <el-main>Main</el-main>
         <el-footer>Footer</el-footer>
       </el-container>

@@ -1,14 +1,8 @@
 from fastapi import Query
 
 from core.security import get_password_hash
-from dbhelper.user import (
-    del_user,
-    get_user,
-    get_user_info,
-    get_users,
-    insert_user,
-    put_user,
-)
+from dbhelper.user import (del_user, get_user, get_user_info, get_users,
+                           insert_user, put_user)
 from schemas import Response, UserAdd, UserInfo, UserPut, UserQuery, UserRead
 from schemas.common import ListAll
 

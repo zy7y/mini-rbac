@@ -12,6 +12,14 @@ export const userStore = defineStore('user', () => {
   // getter
   const accessToken = computed(() => 'Bearer ' + token.value)
 
+  // setup store 不提供$reset 需要自己重置
+  // https://github.com/vuejs/pinia/issues/1056
+  const $reset = () => {
+    token.value = ""
+    userInfo.value = {}
+    userMenus.value = []
+  }
+
   // 非setup语法时的actions
   const loginAction = async (data) => {
 
@@ -34,7 +42,8 @@ export const userStore = defineStore('user', () => {
     ElMessage.success("登录成功.")
   }
 
-  return { token, accessToken, userInfo, userMenus, loginAction }
+  return { token, accessToken, userInfo, userMenus, 
+    $reset, loginAction }
 }, {
     persist: true, // 解决pinia刷新时数据丢失问题
   })

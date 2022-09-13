@@ -1,13 +1,15 @@
 from datetime import datetime, timedelta
 from typing import Optional
 
-from fastapi import Depends
+from fastapi import Depends, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 
-from core.exceptions import TokenAuthFailure
-from dbhelper.user import get_user
+from core.exceptions import PermissionsError, TokenAuthFailure
+from dbhelper.menu import get_apis, get_has_api
+from dbhelper.user import get_user, get_user_info
+from models import UserModel
 
 # JWT
 SECRET_KEY = "lLNiBWPGiEmCLLR9kRGidgLY7Ac1rpSWwfGzTJpTmCU"
@@ -59,4 +61,33 @@ async def check_token(security: HTTPAuthorizationCredentials = Depends(bearer)):
         username: str = payload.get("sub")
         return await get_user({"username": username})
     except JWTError:
-        raise TokenAuthFailure
+        raise TokenAuthFailure(403, "认证失败")
+
+
+async def check_permissions(request: Request, user: UserModel = Depends(check_token)):
+    """检查接口权限"""
+    # 查询当前激活角色
+    result = await get_user_info(user)
+    active_rid = result["roles"][0]["id"]
+
+    # 白名单
+    whitelist = [f"/user/{user.id}", f"/role/{active_rid}/menu"]
+    flag = request.url.path in whitelist and request.method == "GET"
+    if flag:
+        return
+
+    api = request.url.path
+    for k, v in request.path_params.items():
+        api = api.replace(v, "{%s}" % k)
+    #  方法1. 每一次去查数据库
+    # result = await get_has_api(active_rid, api, request.method)
+
+    # 2. 登录之后查一次 后面去结果查 todo 更新权限时需要更新 , 最好结果放redis
+    cache_key = f"{user.username}_{active_rid}"
+    # 缓存到fastapi 应用实例中
+    if not hasattr(request.app.state, cache_key):
+        setattr(request.app.state, cache_key, await get_apis(active_rid))
+    if {"api": api, "method": request.method} not in getattr(
+        request.app.state, cache_key
+    ):
+        raise PermissionsError(403, detail="无权访问")

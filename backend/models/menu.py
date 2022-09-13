@@ -15,7 +15,6 @@ class MenuModel(Table):
     identifier = fields.CharField(max_length=30, description="权限标识 user:add", null=True)
     api = fields.CharField(max_length=128, description="接口地址", null=True)
     method = fields.CharField(max_length=10, description="接口请求方式", null=True)
-    regx = fields.CharField(max_length=50, description="接口地址正则表达式", null=True)
 
     class Meta:
         table = "sys_menu"
