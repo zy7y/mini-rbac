@@ -3,7 +3,7 @@ from typing import Any, Callable, get_type_hints
 from fastapi import Depends, routing
 
 from controller.common import about, login
-from controller.menu import menu_add, menu_arr, menu_del
+from controller.menu import menu_add, menu_arr, menu_del, menu_put
 from controller.role import (assigned_menu, role_add, role_arr, role_del,
                              role_has_menu, role_put, role_query)
 from controller.user import (user_add, user_arr, user_del, user_info,
@@ -107,7 +107,9 @@ class Route(routing.APIRoute):
         )
 
 
-has_perm = {"dependencies": [Depends(check_permissions)]}
+has_perm = {
+    # "dependencies": [Depends(check_permissions)]
+}
 
 routes = [
     Route.post("/login", endpoint=login, tags=["公共"], summary="登录"),
@@ -156,6 +158,9 @@ routes = [
     Route.post("/menu", endpoint=menu_add, tags=["菜单管理"], summary="菜单新增", **has_perm),
     Route.delete(
         "/menu/{pk}", endpoint=menu_del, tags=["菜单管理"], summary="菜单删除", **has_perm
+    ),
+    Route.put(
+        "/menu/{pk}", endpoint=menu_put, tags=["菜单管理"], summary="菜单更新", **has_perm
     ),
 ]
 

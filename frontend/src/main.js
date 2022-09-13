@@ -1,17 +1,17 @@
-import { createApp } from 'vue'
+import { createApp } from "vue";
 
-import App from './App.vue'
-import router from './router'
-import store from './stores'
+import App from "./App.vue";
+import router from "./router";
+import store from "./stores";
 
-import 'normalize.css'
-import '@/assets/base.css'
-import 'element-plus/theme-chalk/el-message.css'
-import 'element-plus/theme-chalk/el-loading.css'
+import "normalize.css";
+import "@/assets/css/base.css";
 
-const app = createApp(App)
+import "ant-design-vue/dist/antd.css";
 
-app.use(store)
-app.use(router)
+const app = createApp(App);
 
-app.mount('#app')
+app.use(store);
+app.use(router);
+
+app.mount("#app");

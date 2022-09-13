@@ -43,7 +43,7 @@ params = [
         "/menu",
         MenuIn(  # id 1
             name="系统管理",
-            meta={"icon": "Group"},
+            meta={"icon": "AppstoreOutlined"},
             path="/system",
             type=0,
             component=None,
@@ -57,7 +57,7 @@ params = [
         "/menu",
         MenuIn(  # id 2
             name="系统设置",
-            meta={"icon": "setting"},
+            meta={"icon": "SettingOutlined"},
             path="/system",
             type=0,
             component=None,
@@ -72,7 +72,7 @@ params = [
         "/menu",
         MenuIn(  # id 3
             name="用户管理",
-            meta={"icon": "User"},
+            meta={"icon": "TeamOutlined"},
             path="/system/user",
             type=1,
             component="/system/user.vue",
@@ -86,7 +86,7 @@ params = [
         "/menu",
         MenuIn(  # id 4
             name="角色管理",
-            meta={"icon": "Role"},
+            meta={"icon": "UserOutlined"},
             path="/system/role",
             type=1,
             component="/system/role.vue",
@@ -100,7 +100,7 @@ params = [
         "/menu",
         MenuIn(  # id 5
             name="菜单管理",
-            meta={"icon": "Menu"},
+            meta={"icon": "MenuOutlined"},
             path="/system/menu",
             type=1,
             component="/system/menu.vue",
@@ -114,7 +114,7 @@ params = [
         "/menu",
         MenuIn(  # id 6
             name="关于",
-            meta={"icon": "Menu"},
+            meta={"icon": "DashboardOutlined"},
             path="/setting/about",
             type=1,
             component="/setting/about.vue",
@@ -307,6 +307,20 @@ params = [
             identifier="menu:delete",
             api="/menu/{pk}",
             method="DELETE",
+        ).dict(),
+    ),
+    (
+        "/menu",
+        MenuIn(
+            name="修改菜单",
+            meta={"icon": "Update"},
+            path=None,
+            type=2,
+            component=None,
+            pid=5,
+            identifier="menu:update",
+            api="/menu/{pk}",
+            method="PUT",
         ).dict(),
     ),
     # 分配权限

@@ -67,3 +67,8 @@ async def get_apis(pk: int):
         AND srm.rid = (?)  and m.status != 9""",
         [pk],
     )
+
+
+async def put_menu(pk: int, data):
+    """更新菜单"""
+    return await MenuModel.filter(id=pk).update(**data.dict())
