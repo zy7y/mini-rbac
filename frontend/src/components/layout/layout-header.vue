@@ -1,7 +1,8 @@
 <script setup>
 import { ref } from "vue";
 import UserInfo from "@/components/layout/layout-info/layout-info.vue";
-import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons-vue";
+import HeaderCrumb from "./header-crumb.vue";
+import { loadIconCpn } from "@/utils/loadCpn";
 
 // 记录图标状态
 const collapsed = ref(false);
@@ -18,25 +19,36 @@ const clickMenuFold = () => {
 
 <template>
   <div class="header">
-    <menu-unfold-outlined
-      v-if="collapsed"
-      class="trigger"
+    <!-- 左侧菜单收缩控制 -->
+    <component
+      class="menu-fold"
+      :is="loadIconCpn(collapsed ? 'MenuUnfoldOutlined' : 'MenuFoldOutlined')"
       @click="clickMenuFold"
-    />
-    <menu-fold-outlined v-else class="trigger" @click="clickMenuFold" />
-    <UserInfo />
+    >
+    </component>
+
+    <div class="right">
+      <HeaderCrumb />
+      <UserInfo class="info" />
+    </div>
   </div>
 </template>
 
 <style scoped>
-.trigger {
-  margin-left: 16px;
+.header {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  padding: 0 16px;
+}
+.menu-fold {
   font-size: 24px;
+  line-height: 64px;
 }
 
 .right {
-  float: right;
-  margin-right: 16px;
-  font-size: 16px;
+  display: flex;
+  flex: 1;
+  justify-content: space-between;
 }
 </style>

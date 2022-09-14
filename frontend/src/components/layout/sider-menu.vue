@@ -2,7 +2,6 @@
 import { useRouter } from "vue-router";
 import { userStore } from "@/stores/user";
 import { loadIconCpn } from "@/utils/loadCpn";
-import { ref } from "vue";
 
 const store = userStore();
 const router = useRouter();
@@ -15,10 +14,7 @@ const menuClick = (menu) => {
 
 <template>
   <div class="sider-menu">
-    <div class="logo">
-      <img src="@/assets/img/fastapi.svg" />
-      <h1>Mini RBAC</h1>
-    </div>
+    <div class="logo"></div>
     <a-menu theme="dark" mode="inline" v-model:selectedKeys="store.selectKey">
       <template v-for="menu in store.userMenus" :key="menu.id">
         <!-- 0 目录 顶层菜单 -->
@@ -46,27 +42,10 @@ const menuClick = (menu) => {
 
 <style scoped>
 .logo {
-  position: relative;
   display: flex;
-  align-items: center;
-  padding: 16px 16px;
-  line-height: 32px;
-  cursor: pointer;
-}
-
-.logo img {
-  display: inline-block;
   height: 32px;
-  vertical-align: middle;
-  transition: height 0.2s;
-}
-
-.logo h1 {
-  margin: 0 0 0 12px;
-  overflow: hidden;
-  color: #fff;
-  font-weight: 600;
-  font-size: 18px;
-  line-height: 32px;
+  background: rgba(255, 255, 255, 0.3) url("@/assets/img/fastapi.svg");
+  margin: 16px;
+  background-size: 100% 100%;
 }
 </style>

@@ -22,7 +22,7 @@ const onClick = ({ key }) => {
 </script>
 
 <template>
-  <div class="right">
+  <div>
     <a-dropdown>
       <a class="ant-dropdown-link" @click.prevent>
         {{ store.userInfo.nickname }} - {{ store.userInfo.roles[0].name }}
@@ -38,4 +38,8 @@ const onClick = ({ key }) => {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+div {
+  font-size: 16px;
+}
+</style>
