@@ -1,24 +1,24 @@
 <script setup>
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-import { userStore } from "@/stores/user";
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { userStore } from '@/stores/user'
 
-import SelectRole from "./select-role.vue";
+import SelectRole from './select-role.vue'
 
-const store = userStore();
-const router = useRouter();
+const store = userStore()
+const router = useRouter()
 
-const roleChangeRef = ref();
+const roleChangeRef = ref()
 
 const onClick = ({ key }) => {
-  if (key === "1") {
+  if (key === '1') {
     // 点击切换角色
-    roleChangeRef.value?.showModal();
+    roleChangeRef.value?.showModal()
   } else {
-    store.$reset();
-    router.push("/login");
+    store.$reset()
+    router.push('/login')
   }
-};
+}
 </script>
 
 <template>

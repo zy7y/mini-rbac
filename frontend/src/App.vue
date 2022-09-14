@@ -1,7 +1,7 @@
 <script setup>
-import { RouterView } from "vue-router";
-import { Spin } from "ant-design-vue";
-import { userStore } from "./stores/user";
+import { RouterView } from 'vue-router'
+import { Spin } from 'ant-design-vue'
+import { userStore } from './stores/user'
 </script>
 
 <template>

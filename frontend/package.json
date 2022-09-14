@@ -4,7 +4,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview --port 4173"
+    "preview": "vite preview --port 4173",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
+    "prettier": "prettier --write ."
   },
   "dependencies": {
     "ant-design-vue": "^3.2.12",
@@ -17,7 +19,12 @@
     "vue-router": "^4.1.5"
   },
   "devDependencies": {
+    "@rushstack/eslint-patch": "^1.1.4",
     "@vitejs/plugin-vue": "^3.0.3",
+    "@vue/eslint-config-prettier": "^7.0.0",
+    "eslint": "^8.22.0",
+    "eslint-plugin-vue": "^9.3.0",
+    "prettier": "^2.7.1",
     "unplugin-vue-components": "^0.22.7",
     "vite": "^3.0.9"
   }

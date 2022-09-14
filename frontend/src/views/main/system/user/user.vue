@@ -1,24 +1,24 @@
 <script setup>
-import { getUsers } from "@/service/user";
-import { columns } from "./conf";
-import { formatTime } from "@/utils/format";
+import { getUsers } from '@/service/user'
+import { columns } from './conf'
+import { formatTime } from '@/utils/format'
 
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted } from 'vue'
 
-import { PlusOutlined, SearchOutlined } from "@ant-design/icons-vue";
+import { PlusOutlined, SearchOutlined } from '@ant-design/icons-vue'
 
 // 列表数据
-const dataSource = ref([]);
+const dataSource = ref([])
 
 // 页面展示数据条数变化回调
 const pageSizeChange = (current, size) => {
-  console.log(current, size, "展示数量变化");
-};
+  console.log(current, size, '展示数量变化')
+}
 
 // 页码变化回调
 const pageChange = (page, pageSize) => {
-  console.log(page, pageSize, "页码变化");
-};
+  console.log(page, pageSize, '页码变化')
+}
 
 //分页
 const pagination = reactive({
@@ -26,22 +26,22 @@ const pagination = reactive({
   pageSize: 10, // 每页数量
   showSizeChanger: true,
   total: 200,
-  pageSizeOptions: ["10", "50", "100"],
+  pageSizeOptions: ['10', '50', '100'],
   showTotal: (total) => `共${total}条数据`,
   onShowSizeChange: pageSizeChange,
-  onChange: pageChange,
-});
+  onChange: pageChange
+})
 
 onMounted(() => {
-  getPageData();
-});
+  getPageData()
+})
 
 const getPageData = () => {
   getUsers().then((res) => {
-    dataSource.value = res.data.items;
-    pagination.total = res.data.total;
-  });
-};
+    dataSource.value = res.data.items
+    pagination.total = res.data.total
+  })
+}
 </script>
 
 <template>
@@ -74,15 +74,11 @@ const getPageData = () => {
         </template>
 
         <!-- 数据 -->
-        <a-table
-          :columns="columns"
-          :data-source="dataSource"
-          :pagination="pagination"
-        >
+        <a-table :columns="columns" :data-source="dataSource" :pagination="pagination">
           <template #bodyCell="{ column, record }">
             <template v-if="column.key === 'status'">
               <a-tag :color="record.status !== 9 ? 'green' : 'red'">
-                {{ record.status !== 9 ? "正常" : "已删除" }}
+                {{ record.status !== 9 ? '正常' : '已删除' }}
               </a-tag>
             </template>
             <template v-else-if="column.key === 'created'">

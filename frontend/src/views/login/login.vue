@@ -1,43 +1,38 @@
 <script setup>
-import { UserOutlined, LockOutlined } from "@ant-design/icons-vue";
-import { ref, reactive, computed } from "vue";
+import { UserOutlined, LockOutlined } from '@ant-design/icons-vue'
+import { ref, reactive, computed } from 'vue'
 
-import { userStore } from "@/stores/user";
+import { userStore } from '@/stores/user'
 
-const store = userStore();
+const store = userStore()
 // 表单配置
 const rules = {
   username: [
-    { required: true, message: "请输入用户名", trigger: "blur" },
-    { min: 5, max: 20, message: "5~20", trigger: "blur" },
+    { required: true, message: '请输入用户名', trigger: 'blur' },
+    { min: 5, max: 20, message: '5~20', trigger: 'blur' }
   ],
   password: [
-    { required: true, message: "请输入密码", trigger: "blur" },
-    { min: 6, max: 12, message: "6~12", trigger: "blur" },
-  ],
-};
+    { required: true, message: '请输入密码', trigger: 'blur' },
+    { min: 6, max: 12, message: '6~12', trigger: 'blur' }
+  ]
+}
 
 // 响应式数据
-const formRef = ref();
+const formRef = ref()
 const formData = reactive({
-  username: "admin",
-  password: "123456",
-});
+  username: 'admin',
+  password: '123456'
+})
 // 计算属性 登录按钮是否可以点击
 const disabled = computed(() => {
-  return !(formData.username && formData.password);
-});
+  return !(formData.username && formData.password)
+})
 
 // 事件
 const submitForm = (formEl) => {
-  if (!formEl) return;
-  formEl.validate().then(
-    (res) => {
-      store.loginAction(formData);
-    },
-    (err) => err
-  );
-};
+  if (!formEl) return
+  formEl.validate().then(() => store.loginAction(formData))
+}
 </script>
 
 <template>
@@ -47,10 +42,7 @@ const submitForm = (formEl) => {
 
       <a-form ref="formRef" :model="formData" :rules="rules">
         <a-form-item has-feedback name="username">
-          <a-input
-            v-model:value.trim="formData.username"
-            placeholder="Username"
-          >
+          <a-input v-model:value.trim="formData.username" placeholder="Username">
             <template #prefix>
               <UserOutlined style="color: rgba(0, 0, 0, 0.25)" />
             </template>
@@ -90,7 +82,7 @@ const submitForm = (formEl) => {
   text-align: center;
   width: 100%;
   height: 100%;
-  background-image: url("@/assets/img/background.svg");
+  background-image: url('@/assets/img/background.svg');
 }
 .continer {
   width: 300px;

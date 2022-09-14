@@ -1,16 +1,16 @@
 <script setup>
-import { ref } from "vue";
+import { ref } from 'vue'
 
-import SiderMenu from "@/components/layout/sider-menu.vue";
-import LayoutHeader from "@/components/layout/layout-header.vue";
+import SiderMenu from '@/components/layout/sider-menu.vue'
+import LayoutHeader from '@/components/layout/layout-header.vue'
 
 // a-ayout-sider 折叠状态响应式数据
-const collapsed = ref(false);
+const collapsed = ref(false)
 
 // header组件 折叠按钮事件 触发a-layout-sider折叠
 const changeSiderFold = (subValue) => {
-  collapsed.value = subValue;
-};
+  collapsed.value = subValue
+}
 </script>
 
 <template>
@@ -30,7 +30,7 @@ const changeSiderFold = (subValue) => {
           :style="{
             margin: '24px 16px',
             background: '#F0F2F5',
-            minHeight: '280px',
+            minHeight: '280px'
           }"
         >
           <router-view />

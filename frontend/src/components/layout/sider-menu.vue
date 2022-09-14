@@ -1,15 +1,15 @@
 <script setup>
-import { useRouter } from "vue-router";
-import { userStore } from "@/stores/user";
-import { loadIconCpn } from "@/utils/loadCpn";
+import { useRouter } from 'vue-router'
+import { userStore } from '@/stores/user'
+import { loadIconCpn } from '@/utils/loadCpn'
 
-const store = userStore();
-const router = useRouter();
+const store = userStore()
+const router = useRouter()
 
 // 菜单点击事件
 const menuClick = (menu) => {
-  router.push(menu.path);
-};
+  router.push(menu.path)
+}
 </script>
 
 <template>
@@ -44,7 +44,7 @@ const menuClick = (menu) => {
 .logo {
   display: flex;
   height: 32px;
-  background: rgba(255, 255, 255, 0.3) url("@/assets/img/fastapi.svg");
+  background: rgba(255, 255, 255, 0.3) url('@/assets/img/fastapi.svg');
   margin: 16px;
   background-size: 100% 100%;
 }

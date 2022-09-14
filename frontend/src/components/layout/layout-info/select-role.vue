@@ -1,42 +1,42 @@
 <script setup>
-import { ref, computed } from "vue";
-import { userStore } from "@/stores/user";
+import { ref, computed } from 'vue'
+import { userStore } from '@/stores/user'
 
-const store = userStore();
+const store = userStore()
 
-const loading = ref(false);
-const visible = ref(false);
+const loading = ref(false)
+const visible = ref(false)
 
-const currentRoleId = ref(store.userInfo.roles[0].id);
+const currentRoleId = ref(store.userInfo.roles[0].id)
 
 // 角色列表选项
 const options = computed(() => {
   return store.userInfo.roles.map((role) => ({
     label: role.name,
-    value: role.id,
-  }));
-});
+    value: role.id
+  }))
+})
 
 const showModal = () => {
-  visible.value = true;
-};
+  visible.value = true
+}
 
 const handleOk = () => {
-  loading.value = true;
-  store.userSelectRole(currentRoleId.value);
+  loading.value = true
+  store.userSelectRole(currentRoleId.value)
   setTimeout(() => {
-    loading.value = false;
-    visible.value = false;
-  }, 1000);
-};
+    loading.value = false
+    visible.value = false
+  }, 1000)
+}
 
 const handleCancel = () => {
-  visible.value = false;
-};
+  visible.value = false
+}
 
 defineExpose({
-  showModal,
-});
+  showModal
+})
 </script>
 
 <template>
@@ -44,13 +44,7 @@ defineExpose({
     <a-modal v-model:visible="visible" title="切换角色" @ok="handleOk">
       <template #footer>
         <a-button key="back" @click="handleCancel">取消</a-button>
-        <a-button
-          key="submit"
-          type="primary"
-          :loading="loading"
-          @click="handleOk"
-          >确定</a-button
-        >
+        <a-button key="submit" type="primary" :loading="loading" @click="handleOk">确定</a-button>
       </template>
       <span>选择角色：</span>
 

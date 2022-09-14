@@ -1,20 +1,20 @@
 <script setup>
-import { ref } from "vue";
-import UserInfo from "@/components/layout/layout-info/layout-info.vue";
-import HeaderCrumb from "./header-crumb.vue";
-import { loadIconCpn } from "@/utils/loadCpn";
+import { ref } from 'vue'
+import UserInfo from '@/components/layout/layout-info/layout-info.vue'
+import HeaderCrumb from './header-crumb.vue'
+import { loadIconCpn } from '@/utils/loadCpn'
 
 // 记录图标状态
-const collapsed = ref(false);
+const collapsed = ref(false)
 
-const emits = defineEmits(["changeFold"]);
+const emits = defineEmits(['changeFold'])
 
 // 修改图标状态同时传递参数给父组件让其变更菜单收缩
 const clickMenuFold = () => {
-  collapsed.value = !collapsed.value;
+  collapsed.value = !collapsed.value
   // 父组件需要绑定这个事件
-  emits("changeFold", collapsed.value);
-};
+  emits('changeFold', collapsed.value)
+}
 </script>
 
 <template>
