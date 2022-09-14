@@ -20,7 +20,7 @@ export default (config) => {
       if (res.data.code !== 200) {
         message.error(res.data.msg);
       }
-
+      console.log(res.data);
       return res.data;
     },
     (err) => {

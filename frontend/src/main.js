@@ -10,9 +10,10 @@ import "normalize.css";
 import "@/assets/css/base.css";
 
 import "ant-design-vue/dist/antd.css";
+import hasPermisson from "@/utils/directive";
 
 const app = createApp(App);
-
+hasPermisson(app);
 app.use(store);
 
 userStore().loadRoleRouter();

@@ -29,3 +29,10 @@ export function selectRole(rid) {
     method: "put",
   });
 }
+
+// 获取用户列表
+export function getUsers() {
+  return request({
+    url: "/user",
+  });
+}
