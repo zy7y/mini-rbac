@@ -84,20 +84,21 @@ const submitForm = (formEl) => {
 <style scoped>
 .login {
   display: flex;
-  background-color: #2d3a4b;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
   width: 100%;
   height: 100%;
+  background-image: url("@/assets/img/background.svg");
 }
 .continer {
   width: 300px;
   height: 300px;
 }
 .continer h1 {
-  color: #fff;
+  /* color: #fff; */
+  margin-bottom: 30px;
 }
 .continer .ant-btn {
   width: 100%;
