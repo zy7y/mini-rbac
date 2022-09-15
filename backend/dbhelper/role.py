@@ -11,7 +11,7 @@ async def get_role_menus(rid: int):
     db = connections.get("default")
     return await db.execute_query_dict(
         """
-        select m.id, m.name, m.meta, m.path, m.type, m.component, m.pid, m.identifier 
+        select m.id, m.name, m.meta, m.path, m.type, m.component, m.pid, m.identifier, m.api, m.method
         FROM sys_menu as m, sys_role_menu WHERE m.id = sys_role_menu.mid
         AND sys_role_menu.rid = (?) AND sys_role_menu.`status` = 1""",
         [rid],
