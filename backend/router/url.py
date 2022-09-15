@@ -157,7 +157,9 @@ routes = [
         summary="查询角色拥有权限",
         **has_perm
     ),
-    Route.put("/role", endpoint=role_put, tags=["角色管理"], summary="角色更新", **has_perm),
+    Route.put(
+        "/role/{pk}", endpoint=role_put, tags=["角色管理"], summary="角色更新", **has_perm
+    ),
     Route.post(
         "/role/query", endpoint=role_query, tags=["角色管理"], summary="角色条件查询", **has_perm
     ),

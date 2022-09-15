@@ -62,8 +62,8 @@ async def role_put(pk: int, data: RoleIn) -> Response:
 
 async def role_query(query: RoleQuery) -> Response[ListAll[list[RoleRead]]]:
     """post条件查询角色表"""
-    limit = query.size
-    skip = (query.offset - 1) * limit
-    del query.offset, query.size
-    users, count = await get_roles(skip, limit, query.dict())
+    size = query.limit
+    skip = (query.offset - 1) * size
+    del query.offset, query.limit
+    users, count = await get_roles(skip, size, query.dict())
     return Response(data=ListAll(total=count, items=users))

@@ -38,7 +38,7 @@ async def get_roles(skip: int, limit: int, kwargs: dict = None):
         kwargs = {f"{k}__contains": v for k, v in kwargs.items()}
     else:
         kwargs = {}
-    result = RoleModel.filter(status__not=9, **kwargs).all().order_by("-created")
+    result = RoleModel.filter(**kwargs).all().order_by("-created")
     return await result.offset(skip).limit(limit), await result.count()
 
 
