@@ -27,6 +27,8 @@ const handleOk = () => {
   setTimeout(() => {
     loading.value = false
     visible.value = false
+    // 页面刷新-》 白屏
+    location.reload()
   }, 1000)
 }
 

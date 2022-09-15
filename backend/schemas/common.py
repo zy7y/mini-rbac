@@ -42,7 +42,7 @@ class QueryData(BaseModel):
     """分页查询基础数据"""
 
     offset: int = 1
-    size: int = 10
+    limit: int = 10
 
 
 class ListAll(GenericModel, Generic[T]):

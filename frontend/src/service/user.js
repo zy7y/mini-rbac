@@ -31,8 +31,44 @@ export function selectRole(rid) {
 }
 
 // 获取用户列表
-export function getUsers() {
+export function getUsers(params) {
   return request({
-    url: '/user'
+    url: '/user',
+    params
+  })
+}
+
+// 条件查询用户列表
+export function queryUser(data) {
+  return request({
+    url: '/user/query',
+    method: 'post',
+    data
+  })
+}
+
+//  删除用户
+export function delUser(id) {
+  return request({
+    url: `/user/${id}`,
+    method: 'delete'
+  })
+}
+
+// 新增用户
+export function addUser(data) {
+  return request({
+    url: '/user',
+    method: 'post',
+    data
+  })
+}
+
+// 更新用户
+export function putUser(id, data) {
+  return request({
+    url: `/user/${id}`,
+    method: 'put',
+    data
   })
 }

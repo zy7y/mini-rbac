@@ -6,7 +6,6 @@ const route = useRoute()
 const cruPath = computed(() => {
   return route.path.substring(1, route.path.length).split('/')
 })
-console.log(route.path, route.fullPath)
 </script>
 
 <template>

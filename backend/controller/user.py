@@ -48,10 +48,10 @@ async def user_arr(
 
 async def user_list(query: UserQuery) -> Response[ListAll[list[UserRead]]]:
     """post查询用户列表"""
-    limit = query.size
-    skip = (query.offset - 1) * limit
-    del query.offset, query.size
-    users, count = await get_users(skip, limit, query.dict())
+    size = query.limit
+    skip = (query.offset - 1) * size
+    del query.offset, query.limit
+    users, count = await get_users(skip, size, query.dict())
     return Response(data=ListAll(total=count, items=users))
 
 

@@ -3,19 +3,9 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons-vue'
 import { ref, reactive, computed } from 'vue'
 
 import { userStore } from '@/stores/user'
+import { loginRules } from './conf'
 
 const store = userStore()
-// 表单配置
-const rules = {
-  username: [
-    { required: true, message: '请输入用户名', trigger: 'blur' },
-    { min: 5, max: 20, message: '5~20', trigger: 'blur' }
-  ],
-  password: [
-    { required: true, message: '请输入密码', trigger: 'blur' },
-    { min: 6, max: 12, message: '6~12', trigger: 'blur' }
-  ]
-}
 
 // 响应式数据
 const formRef = ref()
@@ -40,7 +30,7 @@ const submitForm = (formEl) => {
     <div class="continer">
       <h1>Mini RBAC</h1>
 
-      <a-form ref="formRef" :model="formData" :rules="rules">
+      <a-form ref="formRef" :model="formData" :rules="loginRules">
         <a-form-item has-feedback name="username">
           <a-input v-model:value.trim="formData.username" placeholder="Username">
             <template #prefix>

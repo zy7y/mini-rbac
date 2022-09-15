@@ -63,9 +63,8 @@ async def get_users(skip: int, limit: int, kwargs: dict = None):
         kwargs = {f"{k}__contains": v for k, v in kwargs.items()}
     else:
         kwargs = {}
-    result = (
-        UserModel.filter(status__not_in=[9, 5], **kwargs).all().order_by("-created")
-    )
+    result = UserModel.filter(**kwargs).all().order_by("-created")
+    print(await result.offset(skip).limit(limit))
     return await result.offset(skip).limit(limit), await result.count()
 
 
@@ -98,9 +97,11 @@ async def put_user(uid: int, data: UserPut):
     for role in roles:
         if await get_role({"id": role.rid, "status__not": 9}) is None:
             return role.rid
-
     # 更新用户
-    data.password = get_password_hash(data.password)
+    if data.password != "加密之后的密码":
+        data.password = get_password_hash(data.password)
+    else:
+        del data.password
     await UserModel.filter(id=uid).update(**data.dict())
 
     # todo 1. 先前有的角色，这次更新成没有 2. 先前没有的角色 这次更新成有， 3. 只更新了状态
