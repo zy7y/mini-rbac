@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 
+from controller.ws import ws_app
 from core.events import close_orm, init_orm
 from core.exceptions import exception_handlers
 from core.log import logger
@@ -13,6 +14,8 @@ app = FastAPI(
     middleware=middlewares,
     exception_handlers=exception_handlers,
 )
+
+app.mount("/", ws_app)
 
 if __name__ == "__main__":
     import uvicorn

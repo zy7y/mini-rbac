@@ -1,3 +1,7 @@
+import random
+import time
+
+
 def list_to_tree(
     menus, parent_flag: str = "pid", children_key: str = "children"
 ) -> list:
@@ -24,3 +28,15 @@ def list_to_tree(
         else:
             arr.append(menu)
     return arr
+
+
+def get_system_info():
+    """获取系统信息"""
+    time.sleep(1)
+    return {
+        "usage": {
+            "cpu": f"{random.random() * 100: .2}",
+            "memory": f"{random.random() * 100: .2}",
+            "disk": f"{random.random() * 100: .2}",
+        }
+    }
