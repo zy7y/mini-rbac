@@ -6,7 +6,6 @@ import { PlusOutlined } from '@ant-design/icons-vue'
 import { getRoles, queryRole, delRole, putRole, addRole } from '@/service/role'
 import { getMenus } from '@/service/menu'
 import { columns, rules, treeFieldNames } from './conf'
-import { formatTime } from '@/utils/format'
 import { message } from 'ant-design-vue'
 import { getMenus as getRoleMenu } from '@/service/user'
 
@@ -239,10 +238,10 @@ watch(
               </a-tag>
             </template>
             <template v-else-if="column.key === 'created'">
-              {{ formatTime(record.created) }}
+              {{ $$formatTime(record.created) }}
             </template>
             <template v-else-if="column.key === 'modified'">
-              {{ formatTime(record.modified) }}
+              {{ $$formatTime(record.modified) }}
             </template>
             <template v-else-if="column.key === 'action'">
               <span>
