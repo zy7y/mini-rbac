@@ -41,7 +41,6 @@ class UserInfo(UserRead):
     """用户信息模型"""
 
     roles: list[UserHasRole] = Field(..., description="用户拥有角色")
-    permissions: list[str] = Field(..., description="角色拥有的按钮权限标识")
 
 
 class RoleActive(BaseModel):
@@ -52,7 +51,7 @@ class RoleActive(BaseModel):
 class UserAdd(UserIn):
     """新增用户模型"""
 
-    rids: list[RoleActive] = Field(..., description="选择角色列表")
+    roles: list[RoleActive] = Field(..., description="选择角色列表")
 
 
 class UserQuery(QueryData):

@@ -20,7 +20,7 @@ class RoleBasic(BaseModel):
 
 
 class RoleIn(RoleBasic):
-    pass
+    menus: list[int] = Field(..., description="菜单id列表")
 
 
 class RoleRead(RoleBasic, ReadBase):

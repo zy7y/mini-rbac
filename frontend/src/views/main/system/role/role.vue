@@ -4,6 +4,7 @@ import { ref, reactive, onMounted } from 'vue'
 import { PlusOutlined } from '@ant-design/icons-vue'
 
 import { getRoles, queryRole, delRole, putRole, addRole } from '@/service/role'
+import { getMenus } from '@/service/menu'
 import { columns, addRoleRules } from './conf'
 import { formatTime } from '@/utils/format'
 import { message } from 'ant-design-vue'
@@ -81,17 +82,22 @@ const addVisible = ref(false)
 const formRef = ref(null)
 const newRoleForm = reactive({
   name: '',
-  remark: ''
+  remark: '',
+  menus: []
 })
 
 const addClick = () => {
   addVisible.value = !addVisible.value
+  // 弹出modal 并获取菜单树
+  getMenus().then((res) => (treeData.value = res.data))
 }
 
 // 新增modal 确定的回调
 const onOk = () => {
   formRef.value.validateFields().then(() => {
     // 表单验证通过
+    console.log(newRoleForm.menus)
+    newRoleForm.menus = newRoleForm.menus.map((e) => e.id)
     addRole(newRoleForm).then((res) => {
       if (res.msg === '请求成功') {
         message.success('新增成功')
@@ -116,10 +122,14 @@ const onCancel = () => {
 
 const putClick = (record) => {
   // 打开编辑的modal
+  getMenus().then((res) => (treeData.value = res.data))
+
   putVisible.value = !putVisible.value
   putId.value = record.id
   putRoleForm.name = record.name
   putRoleForm.remark = record.remark
+
+  console.log(record)
 }
 
 const putVisible = ref(false)
@@ -127,7 +137,8 @@ const putVisible = ref(false)
 const putRoleFormRef = ref()
 const putRoleForm = reactive({
   name: '',
-  remark: ''
+  remark: '',
+  menus: []
 })
 const putId = ref()
 
@@ -153,6 +164,15 @@ const onOkPut = () => {
 const onCancelPut = () => {
   putRoleFormRef.value.resetFields()
 }
+
+// tree
+const treeData = ref()
+
+// 获取选中的菜单
+const check = (key, { checkedNodesPositions }) => {
+  // console.log(checkedNodesPositions)
+  newRoleForm.menus = checkedNodesPositions.map((e) => ({ key: e.pos, id: e.node.id }))
+}
 </script>
 
 <template>
@@ -172,7 +192,7 @@ const onCancelPut = () => {
 
     <!-- 列表 -->
     <div class="data">
-      <a-card title="用户列表"
+      <a-card title="角色列表"
         ><template #extra>
           <a-button type="primary" v-per="'role:create'" @click="addClick">
             <template #icon><plus-outlined /></template>
@@ -229,6 +249,11 @@ const onCancelPut = () => {
         <a-form-item name="remark" label="描述">
           <a-input v-model:value="newRoleForm.remark" />
         </a-form-item>
+        <a-form-item name="menus" label="菜单">
+          <a-tree checkable :tree-data="treeData" @check="check">
+            <template #title="{ name }"> {{ name }} </template>
+          </a-tree>
+        </a-form-item>
       </a-form>
     </a-modal>
 
@@ -247,6 +272,11 @@ const onCancelPut = () => {
         </a-form-item>
         <a-form-item name="remark" label="描述">
           <a-input v-model:value="putRoleForm.remark" />
+        </a-form-item>
+        <a-form-item name="menus" label="菜单">
+          <a-tree checkable :tree-data="treeData" @check="check">
+            <template #title="{ name }"> {{ name }} </template>
+          </a-tree>
         </a-form-item>
       </a-form>
     </a-modal>

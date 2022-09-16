@@ -16,7 +16,9 @@ from schemas import ListAll, Response, RoleIn, RoleInfo, RoleMenuIn, RoleQuery, 
 
 
 async def role_add(data: RoleIn) -> Response[RoleInfo]:
-    return Response(data=await new_role(data))
+    if result := await new_role(data):
+        return Response(data=result)
+    return Response(code=400, msg="菜单不存在")
 
 
 async def role_has_menu(rid: int):

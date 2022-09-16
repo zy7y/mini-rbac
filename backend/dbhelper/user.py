@@ -32,19 +32,9 @@ async def get_user_info(user: UserModel):
         [user.id],
     )
 
-    # 当前激活角色的按钮权限列表
-    perm_result = await db.execute_query_dict(
-        """
-        select m.identifier from sys_role_menu as rm, sys_menu as m where rm.mid = m.id and rm.rid = (?) and
-        m.identifier not null and m.identifier != "" and rm.status != 9
-        """,
-        [sql_result[0]["id"]],
-    )
-
     return {
         **jsonable_encoder(user),
         "roles": sql_result,
-        "permissions": [i["identifier"] for i in perm_result],
     }
 
 
@@ -64,7 +54,6 @@ async def get_users(skip: int, limit: int, kwargs: dict = None):
     else:
         kwargs = {}
     result = UserModel.filter(**kwargs).all().order_by("-created")
-    print(await result.offset(skip).limit(limit))
     return await result.offset(skip).limit(limit), await result.count()
 
 

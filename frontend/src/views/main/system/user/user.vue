@@ -106,9 +106,8 @@ const addClick = () => {
 const onOk = () => {
   formRef.value.validateFields().then(() => {
     // 表单验证通过
-    const { username, nickname, password, roles } = newUserForm
-    let rids = roles.map((e, i) => ({ rid: e, status: i === 0 ? 5 : 1 }))
-    addUser({ username, nickname, password, rids }).then((res) => {
+    newUserForm.roles = newUserForm.roles.map((e, i) => ({ rid: e, status: i === 0 ? 5 : 1 }))
+    addUser(newUserForm).then((res) => {
       if (res.msg === '请求成功') {
         message.success('新增成功')
         // 1. 关闭 modal

@@ -44,6 +44,7 @@ export const addRoleRules = [
     remark: [
       { required: true, message: '请输入描述', trigger: 'blur' },
       { min: 1, max: 20, message: '1~20', trigger: 'blur' }
-    ]
+    ],
+    menus: [{ required: true, message: '请选择菜单', trigger: 'blur' }]
   }
 ]

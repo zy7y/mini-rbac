@@ -1,13 +1,16 @@
 <script setup>
+import { ref } from 'vue'
 import { PlusOutlined } from '@ant-design/icons-vue'
 
 import { columns } from './conf'
 import { formatTime } from '@/utils/format'
-import { userStore } from '@/stores/user'
 import { loadIconCpn } from '@/utils/loadCpn'
+import { getMenus } from '@/service/menu'
 
 // 列表数据
-const dataSource = userStore().userMenus
+const dataSource = ref([])
+
+getMenus().then((res) => (dataSource.value = res.data))
 
 // 菜单类型隐射
 

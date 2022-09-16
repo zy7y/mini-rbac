@@ -1,6 +1,6 @@
 from tortoise import connections
 
-from models import RoleModel
+from models import MenuModel, RoleMenuModel, RoleModel
 from schemas.role import RoleIn
 
 
@@ -20,7 +20,16 @@ async def get_role_menus(rid: int):
 
 async def new_role(role: RoleIn):
     """新增角色"""
-    return await RoleModel.create(**role.dict())
+    # 校验菜单是否存在
+    if not all([await MenuModel.filter(id=mid).first() for mid in role.menus]):
+        return False
+
+    obj = await RoleModel.create(name=role.name, remark=role.remark)
+    # 写入菜单
+    await RoleMenuModel.bulk_create(
+        [RoleMenuModel(rid=obj.id, mid=mid) for mid in role.menus]
+    )
+    return obj
 
 
 async def get_roles(skip: int, limit: int, kwargs: dict = None):

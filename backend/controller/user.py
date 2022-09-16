@@ -19,10 +19,10 @@ async def user_add(data: UserAdd) -> Response[UserRead]:
     """新增用户并分配角色 一步到位"""
     if await get_user({"username": data.username}) is not None:
         return Response(code=400, msg="用户名已存在")
-    roles = data.rids
-    del data.rids
+    rids = data.roles
+    del data.roles
     data.password = get_password_hash(data.password)
-    result = await insert_user(data, roles)
+    result = await insert_user(data, rids)
     if isinstance(result, int):
         return Response(code=400, msg=f"角色{result}不存在")
     return Response(data=result)

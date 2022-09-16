@@ -1,6 +1,7 @@
 from fastapi import Query
 
-from dbhelper.menu import del_menu, get_menus, insert_menu, put_menu
+from core.utils import list_to_tree
+from dbhelper.menu import del_menu, get_menus, get_tree_menu, insert_menu, put_menu
 from schemas import ListAll, MenuIn, MenuRead, Response
 
 
@@ -11,10 +12,9 @@ async def menu_add(data: MenuIn) -> Response[MenuRead]:
 async def menu_arr(
     offset: int = Query(default=1, description="偏移量"),
     limit: int = Query(default=10, description="数量"),
-) -> Response[ListAll[list[MenuRead]]]:
-    skip = (offset - 1) * limit
-    menus, count = await get_menus(skip, limit)
-    return Response(data=ListAll(total=count, items=menus))
+) -> Response:
+    menus = await get_tree_menu()
+    return Response(data=list_to_tree(menus))
 
 
 async def menu_del(pk: int) -> Response:

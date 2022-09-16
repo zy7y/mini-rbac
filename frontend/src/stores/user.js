@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 import { message } from 'ant-design-vue'
 
 import router from '@/router'
-import { loadRouter, loadDefaultMenu } from '@/utils/loadCpn'
+import { loadRouter, getPermissions } from '@/utils/loadCpn'
 import { getMenus, getUserInfo, login, selectRole } from '@/service/user'
 
 export const userStore = defineStore(
@@ -12,6 +12,7 @@ export const userStore = defineStore(
     const token = ref('')
     const userInfo = ref({})
     const userMenus = ref([])
+    const permissions = ref([])
 
     const selectKey = ref(null)
 
@@ -26,6 +27,7 @@ export const userStore = defineStore(
       token.value = ''
       userInfo.value = {}
       userMenus.value = []
+      permissions.value = []
     }
 
     /**
@@ -41,16 +43,19 @@ export const userStore = defineStore(
       const menus = await getMenus(info.data.roles[0].id)
       userMenus.value = menus.data
 
-      // 3.1 加载权限
+      // 3.1 加载路由权限
       loadRouter(menus.data)
 
-      // 3.2 默认跳转路由
-      const defaultMenu = loadDefaultMenu(menus.data)
+      // 3.2 加载按钮权限
+      const [btnPermissions, firstMenu] = getPermissions(menus.data)
+      permissions.value = btnPermissions
 
-      selectKey.value = [defaultMenu.id]
-      // 4. 跳转
-      if (defaultMenu.path) {
-        router.push(defaultMenu.path)
+      // 3.2 默认打开菜单
+      selectKey.value = [firstMenu.id]
+
+      // 4. 跳转路由
+      if (firstMenu?.path) {
+        router.push(firstMenu.path)
       } else {
         router.push('/main')
       }
@@ -82,6 +87,7 @@ export const userStore = defineStore(
       accessToken,
       userInfo,
       userMenus,
+      permissions,
       isLoading,
       selectKey,
       $reset,

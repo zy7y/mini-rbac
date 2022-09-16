@@ -25,7 +25,11 @@ async def get_menus(skip: int, limit: int, kwargs: dict = None):
     else:
         kwargs = {}
     result = MenuModel.filter(status__not=9, **kwargs).all().order_by("-created")
-    return await result.offset(skip).limit(limit), await result.count()
+    return await result.offset(skip).limit(limit)
+
+
+async def get_tree_menu():
+    return await MenuModel.filter(status__not=9).all().values()
 
 
 async def get_menu(kwargs):

@@ -35,11 +35,26 @@ function loadRouter(menus) {
   }
 }
 
-// 默认打开第一个
-function loadDefaultMenu(menus) {
-  for (const menu of menus) {
-    return menu.children.find((e) => e.type === 1)
+// 获取按钮权限列表，和第一个选中菜单
+function getPermissions(menuArr) {
+  let arr = []
+  let firstMenu = null
+
+  function _forMenu(menus) {
+    for (const menu of menus) {
+      if (menu.type === 1 && firstMenu === null) {
+        firstMenu = menu
+      }
+      if (menu.type !== 2 && menu.children) {
+        _forMenu(menu.children)
+      } else {
+        arr.push(menu.identifier)
+      }
+    }
   }
+
+  _forMenu(menuArr)
+  return [arr.filter((e) => e !== null), firstMenu]
 }
 
-export { loadIconCpn, loadRouter, loadDefaultMenu }
+export { loadIconCpn, loadRouter, getPermissions }
