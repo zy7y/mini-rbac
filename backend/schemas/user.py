@@ -66,4 +66,4 @@ class UserPut(BaseModel):
 
     nickname: str = Field(..., description="用户昵称")
     password: str = Field(..., description="密码")
-    rids: list[RoleActive] = Field(..., description="选择角色列表")
+    roles: list[RoleActive] = Field(..., description="选择角色列表")

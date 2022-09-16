@@ -2,8 +2,7 @@
 import { ref } from 'vue'
 import { PlusOutlined } from '@ant-design/icons-vue'
 
-import { columns } from './conf'
-import { formatTime } from '@/utils/format'
+import { columns, menuType, methodColor } from './conf'
 import { loadIconCpn } from '@/utils/loadCpn'
 import { getMenus } from '@/service/menu'
 
@@ -14,21 +13,34 @@ getMenus().then((res) => (dataSource.value = res.data))
 
 // 菜单类型隐射
 
-const menuType = {
-  0: '目录',
-  1: '菜单',
-  2: '按钮'
-}
+// 展开行 https://blog.csdn.net/weixin_52691965/article/details/120494451
+const expandedRowKeys = ref([])
 
-const methodColor = {
-  GET: '#61AFFE',
-  POST: '#49CC90',
-  DELETE: '#F93E3E',
-  PUT: '#FCA130'
+const zi = (expanded, record) => {
+  if (expandedRowKeys.value.length > 0) {
+    let index = expandedRowKeys.value.indexOf(record.id)
+    if (index > -1) {
+      expandedRowKeys.value.splice(index, 1)
+    } else {
+      expandedRowKeys.value.splice(0, expandedRowKeys.value.length)
+      expandedRowKeys.value.push(record.id)
+    }
+  } else {
+    expandedRowKeys.value.push(record.id)
+  }
 }
 
 //
 const addClick = () => {
+  console.log('点击')
+}
+
+//
+const putClick = () => {
+  console.log('点击')
+}
+
+const delClick = () => {
   console.log('点击')
 }
 </script>
@@ -50,6 +62,12 @@ const addClick = () => {
           :columns="columns"
           :scroll="{ x: 1600, y: 'calc(100vh - 380px)' }"
           :data-source="dataSource"
+          :pagination="{
+            hideOnSinglePage: true
+          }"
+          :row-key="(record) => record.id"
+          @expand="zi"
+          :expandedRowKeys="expandRowKeys"
         >
           <template #bodyCell="{ column, record }">
             <template v-if="column.key === 'meta'">
@@ -59,13 +77,15 @@ const addClick = () => {
               {{ menuType[record.type] }}
             </template>
             <template v-if="column.key === 'method'">
-              <a-tag :color="methodColor[record.method]">{{ record.method }}</a-tag>
+              <template v-if="record.method">
+                <a-tag :color="methodColor[record.method]">{{ record.method }}</a-tag>
+              </template>
             </template>
             <template v-else-if="column.key === 'created'">
-              {{ formatTime(record.created) }}
+              {{ $formatTime(record.created) }}
             </template>
             <template v-else-if="column.key === 'modified'">
-              {{ formatTime(record.modified) }}
+              {{ $formatTime(record.modified) }}
             </template>
             <template v-else-if="column.key === 'action'">
               <span>

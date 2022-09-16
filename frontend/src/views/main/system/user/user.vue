@@ -6,7 +6,6 @@ import { PlusOutlined } from '@ant-design/icons-vue'
 import { getUsers, queryUser, delUser, addUser, getUserInfo, putUser } from '@/service/user'
 import { getRoles } from '@/service/role'
 import { columns, addUserRules, putUserRules } from './conf'
-import { formatTime } from '@/utils/format'
 import { message } from 'ant-design-vue'
 import { userStore } from '@/stores/user'
 import router from '@/router'
@@ -164,7 +163,7 @@ const onOkPut = () => {
     //验证通过
     const { nickname, password, roles } = putUserForm
     let rids = roles.map((e, i) => ({ rid: e, status: i === 0 ? 5 : 1 }))
-    putUser(putId.value, { nickname, password, rids }).then((res) => {
+    putUser(putId.value, { nickname, password, roles: rids }).then((res) => {
       if (res.msg === '请求成功') {
         message.success('修改成功')
         // 1. 关闭 modal
@@ -232,10 +231,10 @@ const onCancelPut = () => {
               </a-tag>
             </template>
             <template v-else-if="column.key === 'created'">
-              {{ formatTime(record.created) }}
+              {{ $formatTime(record.created) }}
             </template>
             <template v-else-if="column.key === 'modified'">
-              {{ formatTime(record.modified) }}
+              {{ $formatTime(record.modified) }}
             </template>
             <template v-else-if="column.key === 'action'">
               <span>

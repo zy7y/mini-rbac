@@ -3,42 +3,13 @@ import requests as client
 
 from core.log import logger
 from schemas.menu import MenuIn
-from schemas.role import RoleIn, RoleMenuIn
+from schemas.role import RoleIn
 from schemas.user import RoleActive, UserAdd
 
 base = "http://localhost:8000"
 
-
 params = [
-    # 创建角色
-    ("/role", RoleIn(name="super", remark="全部权限").dict()),
-    ("/role", RoleIn(name="user", remark="用户权限").dict()),
-    # 创建用户
-    (
-        "/user",
-        UserAdd(
-            username="admin",
-            nickname="管理员",
-            password="123456",
-            rids=[
-                RoleActive(rid=1, status=5),
-                RoleActive(rid=2),
-            ],
-        ).dict(),
-    ),
-    (
-        "/user",
-        UserAdd(
-            username="tester",
-            nickname="测试员",
-            password="123456",
-            rids=[
-                RoleActive(rid=2, status=5),
-            ],
-        ).dict(),
-    ),
     # 创建菜单
-    # 目录
     (
         "/menu",
         MenuIn(  # id 1
@@ -255,20 +226,6 @@ params = [
     (
         "/menu",
         MenuIn(
-            name="分配权限",
-            meta={"icon": "Delete"},
-            path=None,
-            type=2,
-            component=None,
-            pid=4,
-            identifier="role:assign",
-            api="/role/assigned/menu",
-            method="POST",
-        ).dict(),
-    ),
-    (
-        "/menu",
-        MenuIn(
             name="更新角色",
             meta={"icon": "Update"},
             path=None,
@@ -309,17 +266,41 @@ params = [
             method="DELETE",
         ).dict(),
     ),
-    # 分配权限
+]
+
+datas = [
     (
-        "/role/assigned/menu",
-        RoleMenuIn(rid=1, menus=[num for num in range(1, 20)]).dict(),
+        "/role",
+        RoleIn(
+            name="super",
+            remark="全部权限",
+            menus=[num for num in range(1, len(params) + 1)],
+        ).dict(),
     ),
-    ("/role/assigned/menu", RoleMenuIn(rid=2, menus=[1, 3, 7, 8, 9, 11]).dict()),
+    # 创建用户
+    (
+        "/user",
+        UserAdd(
+            username="admin",
+            nickname="管理员",
+            password="123456",
+            roles=[RoleActive(rid=1, status=5)],
+        ).dict(),
+    ),
 ]
 
 
 @pytest.mark.parametrize("path, data", params)
 def test_add_data(path, data):
+    """注册菜单"""
+    res = client.post(url=base + path, json=data)
+    logger.info(res.json())
+    assert res.status_code == 200
+
+
+@pytest.mark.parametrize("path, data", datas)
+def test_add_user(path, data):
+    """添加账号"""
     res = client.post(url=base + path, json=data)
     logger.info(res.json())
     assert res.status_code == 200

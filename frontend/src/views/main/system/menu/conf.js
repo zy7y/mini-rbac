@@ -65,3 +65,18 @@ export const columns = [
     width: 120
   }
 ]
+
+// 菜单类型映射
+export const menuType = {
+  0: '目录',
+  1: '菜单',
+  2: '按钮'
+}
+
+// 请求方法颜色映射
+export const methodColor = {
+  GET: '#61AFFE',
+  POST: '#49CC90',
+  DELETE: '#F93E3E',
+  PUT: '#FCA130'
+}

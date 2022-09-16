@@ -23,11 +23,11 @@ async def get_user_info(user: UserModel):
     根据id查用户角色列表 按激活角色倒序显示
     """
     db = connections.get("default")
+    # 查角色表 用户角色表中 角色状态 = 1， 关联表中 状态 != 9  为有效角色
     sql_result = await db.execute_query_dict(
         """
-        select r.id, r.name, ur.status from sys_role as r 
-        left join sys_user_role as ur on r.id = ur.rid where
-         ur.uid = (?) and ur.status != 9  and r.status != 9 order by ur.status desc
+        select r.id, r.name, ur.status from sys_role as r , sys_user_role as ur where r.id = ur.rid and
+         ur.uid = (?) and r.status = 1  and ur.status !=9 order by ur.status desc
         """,
         [user.id],
     )
@@ -65,7 +65,7 @@ async def insert_user(user, roles):
 
     # 创建用户
     obj = await UserModel.create(**user.dict())
-
+    # 已有角色 关联 角色id 和是否选中状态
     await UserRoleModel.bulk_create(
         [UserRoleModel(rid=role.rid, uid=obj.id, status=role.status) for role in roles]
     )
@@ -81,8 +81,8 @@ async def put_user(uid: int, data: UserPut):
     """更新用户"""
     from core.security import get_password_hash
 
-    roles = data.rids
-    del data.rids
+    roles = data.roles
+    del data.roles
     for role in roles:
         if await get_role({"id": role.rid, "status__not": 9}) is None:
             return role.rid
@@ -96,13 +96,27 @@ async def put_user(uid: int, data: UserPut):
     # todo 1. 先前有的角色，这次更新成没有 2. 先前没有的角色 这次更新成有， 3. 只更新了状态
 
     db = connections.get("default")
-    # 1. 先把所有数据做删除
-    await db.execute_query_dict(
+    # 1. 先把用户有的角色做删除
+    has_roles = await db.execute_query_dict(
         """
-    update sys_user_role set status = 9 where uid = (?)
+            select r.id from sys_role as r , sys_user_role as ur where r.id = ur.rid and
+         ur.uid = (?) and r.status = 1  and ur.status !=9 
     """,
         [uid],
     )
+    print(has_roles)
+
+    # 2. 将先有的数据标记 删除
+    [
+        await db.execute_query_dict(
+            """
+    update sys_user_role set status = 9 where rid = (?)
+    """,
+            [role["id"]],
+        )
+        for role in has_roles
+    ]
+
     # 2. 新增次此更新的数据
     await UserRoleModel.bulk_create(
         [UserRoleModel(uid=uid, **role.dict()) for role in roles]

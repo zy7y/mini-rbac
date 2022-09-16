@@ -1,18 +1,13 @@
-from fastapi import Query
-
 from core.utils import list_to_tree
-from dbhelper.menu import del_menu, get_menus, get_tree_menu, insert_menu, put_menu
-from schemas import ListAll, MenuIn, MenuRead, Response
+from dbhelper.menu import del_menu, get_tree_menu, insert_menu, put_menu
+from schemas import MenuIn, MenuRead, Response
 
 
 async def menu_add(data: MenuIn) -> Response[MenuRead]:
     return Response(data=await insert_menu(data))
 
 
-async def menu_arr(
-    offset: int = Query(default=1, description="偏移量"),
-    limit: int = Query(default=10, description="数量"),
-) -> Response:
+async def menu_arr() -> Response:
     menus = await get_tree_menu()
     return Response(data=list_to_tree(menus))
 

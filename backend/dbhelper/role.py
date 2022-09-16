@@ -68,6 +68,11 @@ async def del_role(rid: int):
     return await RoleModel.filter(id=rid).update(status=9)
 
 
-async def put_role(pk: int, data):
-    """更新角色"""
-    return await RoleModel.filter(id=pk).update(**data.dict())
+async def put_role(pk, data):
+    """更新角色 菜单"""
+    await RoleModel.filter(id=pk).update(name=data.name, remark=data.remark)
+    await RoleMenuModel.filter(rid=pk).update(status=9)
+
+    await RoleMenuModel.bulk_create(
+        [RoleMenuModel(rid=pk, mid=mid) for mid in data.menus]
+    )

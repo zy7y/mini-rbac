@@ -5,7 +5,6 @@ from fastapi import Depends, routing
 from controller.common import about, login
 from controller.menu import menu_add, menu_arr, menu_del, menu_put
 from controller.role import (
-    assigned_menu,
     role_add,
     role_arr,
     role_del,
@@ -122,6 +121,7 @@ class Route(routing.APIRoute):
 
 
 has_perm = {"dependencies": [Depends(check_permissions)]}
+# has_perm = {}
 
 routes = [
     Route.post("/login", endpoint=login, tags=["公共"], summary="登录"),
@@ -162,13 +162,6 @@ routes = [
     ),
     Route.post(
         "/role/query", endpoint=role_query, tags=["角色管理"], summary="角色条件查询", **has_perm
-    ),
-    Route.post(
-        "/role/assigned/menu",
-        endpoint=assigned_menu,
-        tags=["角色管理"],
-        summary="角色分配菜单",
-        **has_perm
     ),
     # 菜单新增
     Route.get("/menu", endpoint=menu_arr, tags=["菜单管理"], summary="菜单列表", **has_perm),

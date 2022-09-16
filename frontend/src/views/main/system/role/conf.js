@@ -35,16 +35,21 @@ export const columns = [
   }
 ]
 
-export const addRoleRules = [
-  {
-    name: [
-      { required: true, message: '请输入名称', trigger: 'blur' },
-      { min: 3, max: 12, message: '3-12', trigger: 'blur' }
-    ],
-    remark: [
-      { required: true, message: '请输入描述', trigger: 'blur' },
-      { min: 1, max: 20, message: '1~20', trigger: 'blur' }
-    ],
-    menus: [{ required: true, message: '请选择菜单', trigger: 'blur' }]
-  }
-]
+export const rules = {
+  name: [
+    { required: true, message: '请输入名称', trigger: 'blur' },
+    { min: 3, max: 12, message: '3-12', trigger: 'blur' }
+  ],
+  remark: [
+    { required: true, message: '请输入描述', trigger: 'blur' },
+    { min: 1, max: 20, message: '1~20', trigger: 'blur' }
+  ],
+  menus: [{ required: true, message: '请选择菜单', trigger: 'blur' }]
+}
+
+// a-tree组件 字段替换 适配接口返回数据
+export const treeFieldNames = {
+  key: 'id',
+  title: 'name',
+  children: 'children'
+}

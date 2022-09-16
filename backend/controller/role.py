@@ -3,7 +3,7 @@ import json
 from fastapi import Query
 
 from core.utils import list_to_tree
-from dbhelper.relation import role_assigned_menu
+from dbhelper.menu import get_menu
 from dbhelper.role import (
     del_role,
     get_role,
@@ -12,7 +12,7 @@ from dbhelper.role import (
     new_role,
     put_role,
 )
-from schemas import ListAll, Response, RoleIn, RoleInfo, RoleMenuIn, RoleQuery, RoleRead
+from schemas import ListAll, Response, RoleIn, RoleInfo, RoleQuery, RoleRead
 
 
 async def role_add(data: RoleIn) -> Response[RoleInfo]:
@@ -40,15 +40,6 @@ async def role_arr(
     return Response(data=ListAll(total=count, items=roles))
 
 
-async def assigned_menu(data: RoleMenuIn) -> Response:
-    """分配菜单给角色"""
-    if await get_role({"id": data.rid, "status__not": 9}) is None:
-        return Response(code=400, msg="角色不存在")
-    if isinstance(await role_assigned_menu(data), int):
-        return Response(code=400, msg=f"菜单不存在")
-    return Response()
-
-
 async def role_del(pk: int) -> Response:
     if await del_role(pk) == 0:
         return Response(code=400, msg="角色不存在")
@@ -57,6 +48,14 @@ async def role_del(pk: int) -> Response:
 
 async def role_put(pk: int, data: RoleIn) -> Response:
     """更新角色"""
+    print(await get_role({"id": pk}))
+    if await get_role({"id": pk}) is None:
+
+        return Response(code=400, msg="角色不存在")
+    # 如果不为ture -> 有菜单id不存在
+    if not all([await get_menu({"id": mid}) for mid in data.menus]):
+        return Response(code=400, msg="菜单不存在")
+
     if await put_role(pk, data) == 0:
         return Response(code=400, msg="角色不存在")
     return Response()

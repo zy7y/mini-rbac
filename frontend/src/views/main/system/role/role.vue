@@ -1,13 +1,14 @@
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, watch } from 'vue'
 
 import { PlusOutlined } from '@ant-design/icons-vue'
 
 import { getRoles, queryRole, delRole, putRole, addRole } from '@/service/role'
 import { getMenus } from '@/service/menu'
-import { columns, addRoleRules } from './conf'
+import { columns, rules, treeFieldNames } from './conf'
 import { formatTime } from '@/utils/format'
 import { message } from 'ant-design-vue'
+import { getMenus as getRoleMenu } from '@/service/user'
 
 /**查询表单响应式数据 */
 const queryFormRef = ref()
@@ -96,8 +97,6 @@ const addClick = () => {
 const onOk = () => {
   formRef.value.validateFields().then(() => {
     // 表单验证通过
-    console.log(newRoleForm.menus)
-    newRoleForm.menus = newRoleForm.menus.map((e) => e.id)
     addRole(newRoleForm).then((res) => {
       if (res.msg === '请求成功') {
         message.success('新增成功')
@@ -120,26 +119,50 @@ const onCancel = () => {
 
 /**更新 */
 
+/**
+ * 编辑时获取数据 回显到put modal
+ * @param {} record  行数据
+ */
+
+// 点击编辑弹modal事件
 const putClick = (record) => {
+  putVisible.value = !putVisible.value
+  getPutModalData(record.id)
+}
+
+const getPutModalData = (record) => {
   // 打开编辑的modal
   getMenus().then((res) => (treeData.value = res.data))
-
-  putVisible.value = !putVisible.value
+  // 通过角色获取菜单
+  getRoleMenu(record.id).then((res) => {
+    function _mids(menus) {
+      for (const menu of menus) {
+        if (menu.childer) {
+          _mids(menu.childer)
+        } else {
+          putRoleForm.menus.push(menu.id)
+        }
+      }
+    }
+    _mids(res.data)
+  })
   putId.value = record.id
   putRoleForm.name = record.name
   putRoleForm.remark = record.remark
-
-  console.log(record)
 }
 
+// modal 是否显示
 const putVisible = ref(false)
 
+// modal 里的 表单 对象
 const putRoleFormRef = ref()
+// modal 里表达响应式数据
 const putRoleForm = reactive({
   name: '',
   remark: '',
   menus: []
 })
+// 记录 数据的 id 方便修改
 const putId = ref()
 
 //modal 事件
@@ -168,11 +191,13 @@ const onCancelPut = () => {
 // tree
 const treeData = ref()
 
-// 获取选中的菜单
-const check = (key, { checkedNodesPositions }) => {
-  // console.log(checkedNodesPositions)
-  newRoleForm.menus = checkedNodesPositions.map((e) => ({ key: e.pos, id: e.node.id }))
-}
+// 监听menus
+watch(
+  () => newRoleForm.menus,
+  (newValue, oldvalue) => {
+    console.log('menu', newValue, oldvalue)
+  }
+)
 </script>
 
 <template>
@@ -242,7 +267,7 @@ const check = (key, { checkedNodesPositions }) => {
       @ok="onOk"
       @cancel="onCancel"
     >
-      <a-form ref="formRef" :model="newRoleForm" :rules="addRoleRules">
+      <a-form ref="formRef" :model="newRoleForm" :rules="rules">
         <a-form-item name="name" label="名称">
           <a-input v-model:value="newRoleForm.name" />
         </a-form-item>
@@ -250,14 +275,18 @@ const check = (key, { checkedNodesPositions }) => {
           <a-input v-model:value="newRoleForm.remark" />
         </a-form-item>
         <a-form-item name="menus" label="菜单">
-          <a-tree checkable :tree-data="treeData" @check="check">
-            <template #title="{ name }"> {{ name }} </template>
+          <a-tree
+            checkable
+            :tree-data="treeData"
+            :fieldNames="treeFieldNames"
+            v-model:checkedKeys="newRoleForm.menus"
+          >
           </a-tree>
         </a-form-item>
       </a-form>
     </a-modal>
 
-    <!-- 修改用户 -->
+    <!-- 修改 -->
     <a-modal
       v-model:visible="putVisible"
       title="编辑角色"
@@ -266,7 +295,7 @@ const check = (key, { checkedNodesPositions }) => {
       @ok="onOkPut"
       @cancel="onCancelPut"
     >
-      <a-form ref="putRoleFormRef" :model="putRoleForm" :rules="putUserRules">
+      <a-form ref="putRoleFormRef" :model="putRoleForm" :rules="rules">
         <a-form-item name="name" label="名称">
           <a-input v-model:value="putRoleForm.name" />
         </a-form-item>
@@ -274,9 +303,12 @@ const check = (key, { checkedNodesPositions }) => {
           <a-input v-model:value="putRoleForm.remark" />
         </a-form-item>
         <a-form-item name="menus" label="菜单">
-          <a-tree checkable :tree-data="treeData" @check="check">
-            <template #title="{ name }"> {{ name }} </template>
-          </a-tree>
+          <a-tree
+            checkable
+            :tree-data="treeData"
+            :fieldNames="treeFieldNames"
+            v-model:checkedKeys="putRoleForm.menus"
+          ></a-tree>
         </a-form-item>
       </a-form>
     </a-modal>
