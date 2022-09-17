@@ -25,8 +25,8 @@ const changeSiderFold = (subValue) => {
           <!-- 页头 -->
           <LayoutHeader @changeFold="changeSiderFold" />
         </a-layout-header>
-        <!-- 面包屑 -->
         <a-layout-content
+          class="content"
           :style="{
             margin: '24px 16px',
             background: '#F0F2F5',
@@ -41,8 +41,16 @@ const changeSiderFold = (subValue) => {
 </template>
 
 <style scoped>
-.main,
+.main {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
 .ant-layout {
+  width: 100%;
   height: 100%;
 }
 

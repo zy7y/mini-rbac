@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { userStore } from '@/stores/user'
+import { GithubOutlined } from '@ant-design/icons-vue'
 
 import SelectRole from './select-role.vue'
 
@@ -19,10 +20,15 @@ const onClick = ({ key }) => {
     router.push('/login')
   }
 }
+
+const visitGithub = () => {
+  window.open('https://github.com/zy7y/mini-rbac', '_blank')
+}
 </script>
 
 <template>
-  <div>
+  <div class="inline">
+    <github-outlined @click="visitGithub" />
     <a-dropdown>
       <a class="ant-dropdown-link" @click.prevent>
         {{ store.userInfo.nickname }} - {{ store.userInfo.roles[0].name }}
@@ -39,7 +45,7 @@ const onClick = ({ key }) => {
 </template>
 
 <style scoped>
-div {
-  font-size: 16px;
+span {
+  padding: 0 16px;
 }
 </style>

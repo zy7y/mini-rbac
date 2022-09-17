@@ -11,11 +11,14 @@ import '@/assets/css/base.css'
 
 import 'ant-design-vue/dist/antd.css'
 import hasPermisson from '@/utils/directive'
-import { formatTime } from './utils/format'
+import { registerFilter } from './utils'
 
 const app = createApp(App)
+// 权限校验自定义指令
 hasPermisson(app)
-app.config.globalProperties.$formatTime = (value) => formatTime(value)
+// 注册全局filter函数
+registerFilter(app)
+
 app.use(store)
 
 userStore().loadRoleRouter()

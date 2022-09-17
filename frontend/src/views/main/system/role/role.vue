@@ -238,10 +238,10 @@ watch(
               </a-tag>
             </template>
             <template v-else-if="column.key === 'created'">
-              {{ $$formatTime(record.created) }}
+              {{ $formatTime(record.created) }}
             </template>
             <template v-else-if="column.key === 'modified'">
-              {{ $$formatTime(record.modified) }}
+              {{ $formatTime(record.modified) }}
             </template>
             <template v-else-if="column.key === 'action'">
               <span>

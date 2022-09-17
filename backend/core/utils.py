@@ -38,5 +38,10 @@ def get_system_info():
             "cpu": f"{random.random() * 100: .2}",
             "memory": f"{random.random() * 100: .2}",
             "disk": f"{random.random() * 100: .2}",
-        }
+        },
+        "performance": {
+            "rps": f"{random.random() * random.randint(1, 50): .2}",
+            "time": f"{random.random() * random.randint(1, 50): .2}",
+            "user": f"{random.randint(1, 50)}",
+        },
     }

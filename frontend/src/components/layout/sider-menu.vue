@@ -1,7 +1,6 @@
 <script setup>
 import { useRouter } from 'vue-router'
 import { userStore } from '@/stores/user'
-import { loadIconCpn } from '@/utils/loadCpn'
 
 const store = userStore()
 const router = useRouter()
@@ -21,14 +20,14 @@ const menuClick = (menu) => {
         <template v-if="menu.type === 0">
           <a-sub-menu :key="menu.id">
             <template #icon>
-              <component :is="loadIconCpn(menu.meta.icon)"></component>
+              <component :is="$loadIconCpn(menu.meta.icon)"></component>
             </template>
             <template #title>{{ menu.name }}</template>
             <!-- 1 组件 子菜单项 -->
             <template v-for="sub in menu.children" :key="sub.id">
               <a-menu-item @click="menuClick(sub)">
                 <template #icon>
-                  <component :is="loadIconCpn(sub.meta.icon)"></component>
+                  <component :is="$loadIconCpn(sub.meta.icon)"></component>
                 </template>
                 <span>{{ sub.name }}</span>
               </a-menu-item>

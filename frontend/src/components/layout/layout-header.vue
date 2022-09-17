@@ -2,7 +2,6 @@
 import { ref } from 'vue'
 import UserInfo from '@/components/layout/layout-info/layout-info.vue'
 import HeaderCrumb from './header-crumb.vue'
-import { loadIconCpn } from '@/utils/loadCpn'
 
 // 记录图标状态
 const collapsed = ref(false)
@@ -22,7 +21,7 @@ const clickMenuFold = () => {
     <!-- 左侧菜单收缩控制 -->
     <component
       class="menu-fold"
-      :is="loadIconCpn(collapsed ? 'MenuUnfoldOutlined' : 'MenuFoldOutlined')"
+      :is="$loadIconCpn(collapsed ? 'MenuUnfoldOutlined' : 'MenuFoldOutlined')"
       @click="clickMenuFold"
     >
     </component>
@@ -35,6 +34,9 @@ const clickMenuFold = () => {
 </template>
 
 <style scoped>
+div {
+  font-size: 20px;
+}
 .header {
   display: flex;
   width: 100%;

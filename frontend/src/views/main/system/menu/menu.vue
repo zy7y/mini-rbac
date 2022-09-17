@@ -3,7 +3,6 @@ import { ref } from 'vue'
 import { PlusOutlined } from '@ant-design/icons-vue'
 
 import { columns, menuType, methodColor } from './conf'
-import { loadIconCpn } from '@/utils/loadCpn'
 import { getMenus } from '@/service/menu'
 
 // 列表数据
@@ -67,11 +66,10 @@ const delClick = () => {
           }"
           :row-key="(record) => record.id"
           @expand="zi"
-          :expandedRowKeys="expandRowKeys"
         >
           <template #bodyCell="{ column, record }">
             <template v-if="column.key === 'meta'">
-              <component :is="loadIconCpn(record.meta?.icon)"></component>
+              <component :is="$loadIconCpn(record.meta?.icon)"></component>
             </template>
             <template v-if="column.key === 'type'">
               {{ menuType[record.type] }}

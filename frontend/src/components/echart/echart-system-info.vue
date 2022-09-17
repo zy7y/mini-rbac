@@ -88,7 +88,7 @@ const options = computed(() => {
           height: 14,
           fontSize: 14,
           color: '#fff',
-          backgroundColor: 'auto',
+          backgroundColor: 'inherit',
           borderRadius: 3,
           formatter: '{value}%'
         }

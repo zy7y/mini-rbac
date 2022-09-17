@@ -1,46 +1,58 @@
 <script setup>
-import { onUnmounted, ref } from 'vue'
+import { onUnmounted, reactive, toRefs } from 'vue'
 
-import EchartSystemInfo from '@/components/echart/echart-system-info.vue'
+import EachartView from '@/components/echart/eachart-view.vue'
+import MarkdownView from '@/components/markdown/preview-view.vue'
 
 /** websocket */
 let ws = new WebSocket('ws://localhost:8000/ws')
 
-const wsData = ref()
+// 响应式数据
+const data = reactive({
+  systemUsage: {
+    cpu: '0',
+    momery: '0',
+    disk: '0'
+  },
+  performance: {
+    rps: [],
+    time: [],
+    user: []
+  }
+})
+
+// 接收消息
 ws.onmessage = (e) => {
-  // 接收消息
-  wsData.value = JSON.parse(e.data)
+  const wsData = JSON.parse(e.data)
+  data.systemUsage = wsData.usage
+  data.performance.rps.push({
+    value: [Date.now(), wsData.performance.rps]
+  })
+  data.performance.time.push({
+    value: [Date.now(), wsData.performance.time]
+  })
+  data.performance.user.push({
+    value: [Date.now(), wsData.performance.user]
+  })
 }
+
+const { systemUsage, performance } = toRefs(data)
 
 onUnmounted(() => {
   ws.close()
+  console.log('关闭socket 连接')
 })
 </script>
 
 <template>
   <div class="about">
-    <a-card class="system">
-      <template #title> 资源使用率(虚拟数据) </template>
-      <EchartSystemInfo
-        :cpu-value="wsData?.usage.cpu"
-        :disk-value="wsData?.usage.disk"
-        :memory-value="wsData?.usage.memory"
-        :style="{ width: '100%', height: '300px' }"
-      />
-    </a-card>
+    <EachartView :performance="performance" :system-usage="systemUsage" />
+    <MarkdownView class="footer" />
   </div>
 </template>
 
 <style scoped>
-.about {
-  width: 100%;
-  height: 100%;
-}
-.system {
-  width: 50%;
-}
-
-.header .ant-card {
-  width: 40%;
+.footer {
+  margin: 20px 0px;
 }
 </style>

@@ -19,8 +19,12 @@ app.mount("/", ws_app)
 
 if __name__ == "__main__":
     import uvicorn
+    from fastapi.routing import Mount
 
     for i in app.routes:
-        logger.info(f"{i.path}, {i.methods}, {i.__dict__.get('summary')}, {i.endpoint}")
+        if not isinstance(i, Mount):
+            logger.info(
+                f"{i.path}, {i.methods}, {i.__dict__.get('summary')}, {i.endpoint}"
+            )
 
     uvicorn.run("main:app", reload=True)

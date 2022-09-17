@@ -23,7 +23,6 @@ onMounted(() => {
 
   // props 变化就重新设置值
   watchEffect(() => {
-    console.log('eachart 基础组件')
     instance.setOption(props.options)
   })
 })
