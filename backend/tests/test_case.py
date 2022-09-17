@@ -91,8 +91,6 @@ params = [
             component="/setting/about/about.vue",
             pid=2,
             identifier=None,
-            api="/about",
-            method="GET",
         ).dict(),
     ),
     # 按钮

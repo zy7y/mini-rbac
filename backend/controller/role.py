@@ -4,14 +4,8 @@ from fastapi import Query
 
 from core.utils import list_to_tree
 from dbhelper.menu import get_menu
-from dbhelper.role import (
-    del_role,
-    get_role,
-    get_role_menus,
-    get_roles,
-    new_role,
-    put_role,
-)
+from dbhelper.role import (del_role, get_role, get_role_menus, get_roles,
+                           new_role, put_role)
 from schemas import ListAll, Response, RoleIn, RoleInfo, RoleQuery, RoleRead
 
 

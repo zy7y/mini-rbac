@@ -20,11 +20,6 @@ async def login(auth_data: LoginForm) -> Response[LoginResult]:
     return Response(code=400, msg="账号或密码错误")
 
 
-async def about() -> Response:
-    """关于"""
-    pass
-
-
 async def websocket(ws: WebSocket):
     await ws.accept()
     try:

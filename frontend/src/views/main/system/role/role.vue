@@ -1,7 +1,6 @@
 <script setup>
 import { ref, reactive, onMounted, watch } from 'vue'
-
-import { PlusOutlined } from '@ant-design/icons-vue'
+import Table from '@/components/table/table.vue'
 
 import { getRoles, queryRole, delRole, putRole, addRole } from '@/service/role'
 import { getMenus } from '@/service/menu'
@@ -126,7 +125,8 @@ const onCancel = () => {
 // 点击编辑弹modal事件
 const putClick = (record) => {
   putVisible.value = !putVisible.value
-  getPutModalData(record.id)
+  console.log(record, '父组件')
+  getPutModalData(record)
 }
 
 const getPutModalData = (record) => {
@@ -214,49 +214,17 @@ watch(
       </a-form>
     </div>
 
-    <!-- 列表 -->
-    <div class="data">
-      <a-card title="角色列表"
-        ><template #extra>
-          <a-button type="primary" v-per="'role:create'" @click="addClick">
-            <template #icon><plus-outlined /></template>
-            新增</a-button
-          >
-        </template>
-
-        <!-- 数据 -->
-        <a-table
-          :columns="columns"
-          :scroll="{ y: 'calc(100vh - 460px)' }"
-          :data-source="dataSource"
-          :pagination="pagination"
-        >
-          <template #bodyCell="{ column, record }">
-            <template v-if="column.key === 'status'">
-              <a-tag :color="record.status !== 9 ? 'green' : 'red'">
-                {{ record.status !== 9 ? '正常' : '删除' }}
-              </a-tag>
-            </template>
-            <template v-else-if="column.key === 'created'">
-              {{ $formatTime(record.created) }}
-            </template>
-            <template v-else-if="column.key === 'modified'">
-              {{ $formatTime(record.modified) }}
-            </template>
-            <template v-else-if="column.key === 'action'">
-              <span>
-                <a v-per="'role:update'" @click="putClick(record)">编辑</a>
-                <a-divider type="vertical" />
-                <template v-if="record.status !== 9">
-                  <a v-per="'role:delete'" @click="delClick(record)">删除</a>
-                </template>
-              </span>
-            </template>
-          </template>
-        </a-table>
-      </a-card>
-    </div>
-
+    <Table
+      :columns="columns"
+      :data-source="dataSource"
+      :pagination="pagination"
+      page-name="role"
+      list-title="角色列表"
+      @create-click="addClick"
+      @update-click="putClick"
+      @delete-click="delClick"
+    >
+    </Table>
     <!-- 新增 -->
     <a-modal
       v-model:visible="addVisible"

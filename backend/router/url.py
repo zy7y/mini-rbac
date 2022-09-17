@@ -2,25 +2,12 @@ from typing import Any, Callable, get_type_hints
 
 from fastapi import Depends, routing
 
-from controller.common import about, login, websocket
+from controller.common import login, websocket
 from controller.menu import menu_add, menu_arr, menu_del, menu_put
-from controller.role import (
-    role_add,
-    role_arr,
-    role_del,
-    role_has_menu,
-    role_put,
-    role_query,
-)
-from controller.user import (
-    user_add,
-    user_arr,
-    user_del,
-    user_info,
-    user_list,
-    user_put,
-    user_select_role,
-)
+from controller.role import (role_add, role_arr, role_del, role_has_menu,
+                             role_put, role_query)
+from controller.user import (user_add, user_arr, user_del, user_info,
+                             user_list, user_put, user_select_role)
 from core.security import check_permissions
 
 
@@ -121,11 +108,10 @@ class Route(routing.APIRoute):
 
 
 has_perm = {"dependencies": [Depends(check_permissions)]}
-# has_perm = {}
+has_perm = {}
 
 routes = [
     Route.post("/login", endpoint=login, tags=["公共"], summary="登录"),
-    Route.get("/about", endpoint=about, tags=["公共"], summary="关于", **has_perm),
     #  用户管理
     Route.get("/user", endpoint=user_arr, tags=["用户管理"], summary="用户列表", **has_perm),
     Route.post("/user", endpoint=user_add, tags=["用户管理"], summary="用户新增", **has_perm),
