@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 
-from controller.ws import ws_app
 from core.events import close_orm, init_orm
 from core.exceptions import exception_handlers
 from core.log import logger
@@ -15,14 +14,13 @@ app = FastAPI(
     exception_handlers=exception_handlers,
 )
 
-app.mount("/", ws_app)
 
 if __name__ == "__main__":
     import uvicorn
-    from fastapi.routing import Mount
+    from fastapi.routing import APIWebSocketRoute
 
     for i in app.routes:
-        if not isinstance(i, Mount):
+        if not isinstance(i, APIWebSocketRoute):
             logger.info(
                 f"{i.path}, {i.methods}, {i.__dict__.get('summary')}, {i.endpoint}"
             )

@@ -1,5 +1,4 @@
 import random
-import time
 
 
 def list_to_tree(
@@ -32,7 +31,6 @@ def list_to_tree(
 
 def get_system_info():
     """获取系统信息"""
-    time.sleep(1)
     return {
         "usage": {
             "cpu": f"{random.random() * 100: .2}",

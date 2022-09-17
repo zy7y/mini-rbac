@@ -2,7 +2,7 @@ from typing import Any, Callable, get_type_hints
 
 from fastapi import Depends, routing
 
-from controller.common import about, login
+from controller.common import about, login, websocket
 from controller.menu import menu_add, menu_arr, menu_del, menu_put
 from controller.role import (
     role_add,
@@ -172,6 +172,7 @@ routes = [
     Route.put(
         "/menu/{pk}", endpoint=menu_put, tags=["菜单管理"], summary="菜单更新", **has_perm
     ),
+    routing.APIWebSocketRoute("/ws", endpoint=websocket),
 ]
 
 __all__ = [routes]

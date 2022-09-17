@@ -1,4 +1,9 @@
+import asyncio
+
+from starlette.websockets import WebSocket
+
 from core.security import generate_token, verify_password
+from core.utils import get_system_info
 from dbhelper.user import get_user
 from schemas import LoginForm, LoginResult, Response
 
@@ -18,3 +23,14 @@ async def login(auth_data: LoginForm) -> Response[LoginResult]:
 async def about() -> Response:
     """关于"""
     pass
+
+
+async def websocket(ws: WebSocket):
+    await ws.accept()
+    try:
+        while True:
+            await asyncio.sleep(1)
+            await ws.send_json(get_system_info())
+    except Exception as e:
+        print("断开了链接", e)
+        await ws.close()

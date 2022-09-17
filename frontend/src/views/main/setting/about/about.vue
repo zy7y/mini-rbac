@@ -40,7 +40,6 @@ const { systemUsage, performance } = toRefs(data)
 
 onUnmounted(() => {
   ws.close()
-  console.log('关闭socket 连接')
 })
 </script>
 
