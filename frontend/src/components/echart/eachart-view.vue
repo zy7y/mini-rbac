@@ -15,7 +15,7 @@ defineProps({
 
 <template>
   <div class="echart-data">
-    <Card title="资源使用率">
+    <Card title="资源使用率" class="left">
       <EchartSystemInfo
         :cpu-value="systemUsage.cpu"
         :disk-value="systemUsage.disk"
@@ -39,5 +39,8 @@ defineProps({
   display: flex;
   width: 100%;
   justify-content: space-around;
+}
+.left {
+  width: 40%;
 }
 </style>
