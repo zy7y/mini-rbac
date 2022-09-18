@@ -18,6 +18,8 @@ export const userStore = defineStore(
 
     const isLoading = ref(false)
 
+    const isPush = ref(false)
+
     // getter
     const accessToken = computed(() => 'Bearer ' + token.value)
 
@@ -83,6 +85,7 @@ export const userStore = defineStore(
     }
 
     return {
+      isPush,
       token,
       accessToken,
       userInfo,

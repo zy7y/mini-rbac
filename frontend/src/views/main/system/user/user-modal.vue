@@ -1,10 +1,11 @@
 <script setup>
-import { reactive, ref } from 'vue'
+import { reactive, ref, watch } from 'vue'
 import { message } from 'ant-design-vue'
 import { addUserRules, putUserRules } from './conf'
 
-import { addUser, putUser } from '@/service/user'
+import { addUser, putUser, getUserInfo } from '@/service/user'
 import { userStore } from '@/stores/user'
+import { getRoles } from '@/service/role'
 
 const props = defineProps({
   modalTitle: {
@@ -15,22 +16,10 @@ const props = defineProps({
     // create or update
     type: String,
     default: 'create'
-  },
-  roleOptions: {
-    // 角色列表
-    type: Array,
-    default: () => []
-  },
-  userId: {
-    // 更新才会使用
-    type: Number,
-    require: false
   }
 })
 
-const emits = defineEmits(['modalCancel'])
-
-const sotre = userStore()
+const store = userStore()
 
 /** 页面数据 */
 const formRef = ref()
@@ -50,6 +39,34 @@ const putUserForm = reactive({
   roles: []
 })
 
+// modal 状态打开
+const showModal = ref(false)
+// 更新数据的 用户id
+const userId = ref()
+
+// 监听modal状态是否为打开 打开就请求数据
+const roleOptions = ref([])
+watch(showModal, async () => {
+  if (showModal.value) {
+    const res = await getRoles({ limit: 100 })
+    roleOptions.value = res.data.items.map((e) => ({ label: e.name, value: e.id }))
+  }
+})
+
+// 打开modal时的处理 - 更新
+const openModal = async (record) => {
+  // 打开编辑的modal
+  showModal.value = !showModal.value
+  userId.value = record.id
+  // 加载当前用户id 具备的用户角色
+  const res = await getUserInfo(record.id)
+  putUserForm.roles = res.data.roles.map((e) => e.id)
+  // 昵称信息
+  putUserForm.nickname = res.data.nickname
+  putUserForm.password = '加密之后的密码'
+}
+
+// 点击modal 确定
 const onOk = () => {
   formRef.value.validateFields().then(async () => {
     let res
@@ -59,36 +76,31 @@ const onOk = () => {
     } else {
       const { nickname, password, roles } = putUserForm
       let rids = roles.map((e, i) => ({ rid: e, status: i === 0 ? 5 : 1 }))
-      res = await putUser(props.userId, { nickname, password, roles: rids })
+      res = await putUser(userId.value, {
+        nickname,
+        password,
+        roles: rids
+      })
+      if (userId.value === store.userInfo.id) {
+        // 并且修改了激活角色
+        if (rids[0]['rid'] !== store.userInfo.roles[0]['id']) {
+          store.getUserData(userId.value)
+        }
+      }
     }
+    message.success(res.msg)
     formRef.value.resetFields()
     showModal.value = !showModal.value
+    store.isPush = true
   })
 }
 
+// 点击modal 取消
 const onCancel = () => {
   formRef.value.resetFields()
-  emits('modalCancel')
 }
 
-const showModal = ref(false)
-
-// 添加用户
-const addUserAction = () => {
-  formRef.value.validateFields().then(() => {
-    // 表单验证通过
-    newUserForm.roles = newUserForm.roles.map((e, i) => ({ rid: e, status: i === 0 ? 5 : 1 }))
-    addUser(newUserForm).then((res) => {
-      if (res.msg === '请求成功') {
-        message.success('新增成功')
-        // 2. 重置响应式数据
-        formRef.value.resetFields()
-        // 1. 关闭 modal
-        showModal.value = !showModal.value
-      }
-    })
-  })
-}
+defineExpose({ showModal, openModal })
 </script>
 
 <template>

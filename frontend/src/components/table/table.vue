@@ -38,17 +38,14 @@ const emits = defineEmits(['createClick', 'updateClick', 'deleteClick'])
 
 // 事件
 const createEvent = () => {
-  console.log('点击了 table组件 新增 -> 向父组件传递')
   emits('createClick')
 }
 
 const updateEvent = (record) => {
-  console.log('点击了 table组件 更新 -> 向父组件传递', record)
   emits('updateClick', record)
 }
 
 const deleteEvent = (record) => {
-  console.log('点击了 table组件 删除-> 向父组件传递', record)
   emits('deleteClick', record)
 }
 
@@ -68,7 +65,7 @@ const expand = tableTree()
       </template>
       <a-table
         :columns="columns"
-        :scroll="{ y: 'calc(100vh - 300px)' }"
+        :scroll="{ y: 'calc(100vh - 420px)' }"
         :data-source="dataSource"
         :pagination="pagination"
         :row-key="(record) => record.id"

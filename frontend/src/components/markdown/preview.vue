@@ -26,7 +26,7 @@ defineProps({
 </template>
 
 <style scoped>
-.v-md-editor-preview /deep/ .github-markdown-body {
+:deep(.github-markdown-body) {
   padding: 5px 20px !important;
   margin: 0px !important;
 }

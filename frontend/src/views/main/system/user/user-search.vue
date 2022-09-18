@@ -22,7 +22,7 @@ const resetEvent = () => {
 
 <template>
   <div class="search">
-    <a-form ref="formRef" layout="inline" :model="queryForm">
+    <a-form ref="formRef" layout="inline" :model="queryForm" name="search">
       <a-form-item label="用户名" name="username">
         <a-input placeholder="用户名" v-model:value="queryForm.username"> </a-input>
       </a-form-item>

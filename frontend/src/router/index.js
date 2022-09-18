@@ -16,13 +16,7 @@ const routes = [
     name: 'main',
     path: '/main',
     meta: { title: '主页' },
-    component: () => import('@/views/main/main.vue'),
-    children: [
-      {
-        path: '/demo',
-        component: () => import('@/views/main/demo.vue')
-      }
-    ]
+    component: () => import('@/views/main/main.vue')
   },
   {
     path: '/:pathMatch(.*)*',
