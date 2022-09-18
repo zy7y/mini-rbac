@@ -4,7 +4,8 @@ import { ref } from 'vue'
 export const menuType = {
   0: '目录',
   1: '菜单',
-  2: '按钮'
+  2: '按钮',
+  3: '数据'
 }
 
 // 请求方法颜色映射

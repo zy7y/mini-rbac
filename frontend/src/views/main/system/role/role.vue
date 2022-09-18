@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, onMounted, watch } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import Table from '@/components/table/table.vue'
 
 import { getRoles, queryRole, delRole, putRole, addRole } from '@/service/role'
@@ -85,6 +85,15 @@ const newRoleForm = reactive({
   menus: []
 })
 
+// 记录选中的子节点
+const checkedKeys = ref([])
+// 展开的节点
+const expandedKeys = ref([])
+// 选中事件
+const check = (checkedKeys, e) => {
+  newRoleForm.menus = [...e.halfCheckedKeys, ...checkedKeys]
+}
+
 const addClick = () => {
   addVisible.value = !addVisible.value
   // 弹出modal 并获取菜单树
@@ -102,6 +111,8 @@ const onOk = () => {
         addVisible.value = !addVisible.value
         // 2. 重置响应式数据
         formRef.value.resetFields()
+        checkedKeys.value = []
+        expandedKeys.value = []
         // 3. 刷新页面数据
         getPageData()
       }
@@ -113,6 +124,8 @@ const onOk = () => {
 const onCancel = () => {
   // 2. 重置响应式数据
   formRef.value.resetFields()
+  checkedKeys.value = []
+  expandedKeys.value = []
 }
 
 /**更新 */
@@ -121,6 +134,13 @@ const onCancel = () => {
  * 编辑时获取数据 回显到put modal
  * @param {} record  行数据
  */
+
+// modal 里表达响应式数据
+const putRoleForm = reactive({
+  name: '',
+  remark: '',
+  menus: []
+})
 
 // 点击编辑弹modal事件
 const putClick = (record) => {
@@ -132,12 +152,12 @@ const putClick = (record) => {
 const getPutModalData = (record) => {
   // 打开编辑的modal
   getMenus().then((res) => (treeData.value = res.data))
-  // 通过角色获取菜单
+  // 通过角色获取菜单, 已有菜单
   getRoleMenu(record.id).then((res) => {
     function _mids(menus) {
       for (const menu of menus) {
-        if (menu.childer) {
-          _mids(menu.childer)
+        if (menu.children) {
+          _mids(menu.children)
         } else {
           putRoleForm.menus.push(menu.id)
         }
@@ -155,12 +175,7 @@ const putVisible = ref(false)
 
 // modal 里的 表单 对象
 const putRoleFormRef = ref()
-// modal 里表达响应式数据
-const putRoleForm = reactive({
-  name: '',
-  remark: '',
-  menus: []
-})
+
 // 记录 数据的 id 方便修改
 const putId = ref()
 
@@ -189,18 +204,10 @@ const onCancelPut = () => {
 
 // tree
 const treeData = ref()
-
-// 监听menus
-watch(
-  () => newRoleForm.menus,
-  (newValue, oldvalue) => {
-    console.log('menu', newValue, oldvalue)
-  }
-)
 </script>
 
 <template>
-  <div class="user">
+  <div class="role">
     <!-- 查询 -->
     <div class="search">
       <a-form ref="queryFormRef" layout="inline" :model="queryForm">
@@ -246,7 +253,9 @@ watch(
             checkable
             :tree-data="treeData"
             :fieldNames="treeFieldNames"
-            v-model:checkedKeys="newRoleForm.menus"
+            @check="check"
+            v-model:checkedKeys="checkedKeys"
+            v-model:expandedKeys="expandedKeys"
           >
           </a-tree>
         </a-form-item>
