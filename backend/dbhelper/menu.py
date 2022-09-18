@@ -49,18 +49,6 @@ async def del_menu(mid: int):
     return await MenuModel.filter(id=mid).update(status=9)
 
 
-async def get_has_api(pk: int, api: str, method: str):
-    """获取角色接口权限 每次来查数据库"""
-    db = connections.get("default")
-    return await db.execute_query_dict(
-        """
-        select m.api, m.method
-        FROM sys_menu as m, sys_role_menu as srm WHERE m.id = srm.mid
-        AND srm.rid = (?) and m.api = (?) and m.method = (?) and m.status != 9""",
-        [pk, api, method],
-    )
-
-
 async def get_apis(pk: int):
     """返回当前角色拥有的接口权限列表"""
     db = connections.get("default")

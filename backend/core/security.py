@@ -7,7 +7,7 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 
 from core.exceptions import PermissionsError, TokenAuthFailure
-from dbhelper.menu import get_apis, get_has_api
+from dbhelper.menu import get_apis
 from dbhelper.user import get_user, get_user_info
 from models import UserModel
 
@@ -79,8 +79,6 @@ async def check_permissions(request: Request, user: UserModel = Depends(check_to
     api = request.url.path
     for k, v in request.path_params.items():
         api = api.replace(v, "{%s}" % k)
-    #  方法1. 每一次去查数据库
-    # result = await get_has_api(active_rid, api, request.method)
 
     # 2. 登录之后查一次 后面去结果查 todo 更新权限时需要更新 , 最好结果放redis
     cache_key = f"{user.username}_{active_rid}"

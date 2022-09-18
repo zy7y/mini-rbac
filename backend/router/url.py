@@ -4,10 +4,23 @@ from fastapi import Depends, routing
 
 from controller.common import login, websocket
 from controller.menu import menu_add, menu_arr, menu_del, menu_put
-from controller.role import (role_add, role_arr, role_del, role_has_menu,
-                             role_put, role_query)
-from controller.user import (user_add, user_arr, user_del, user_info,
-                             user_list, user_put, user_select_role)
+from controller.role import (
+    role_add,
+    role_arr,
+    role_del,
+    role_has_menu,
+    role_put,
+    role_query,
+)
+from controller.user import (
+    user_add,
+    user_arr,
+    user_del,
+    user_info,
+    user_list,
+    user_put,
+    user_select_role,
+)
 from core.security import check_permissions
 
 

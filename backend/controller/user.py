@@ -2,8 +2,15 @@ from fastapi import Depends, Query
 from starlette.requests import Request
 
 from core.security import check_token, get_password_hash
-from dbhelper.user import (del_user, get_user, get_user_info, get_users,
-                           insert_user, put_user, select_role)
+from dbhelper.user import (
+    del_user,
+    get_user,
+    get_user_info,
+    get_users,
+    insert_user,
+    put_user,
+    select_role,
+)
 from schemas import Response, UserAdd, UserInfo, UserPut, UserQuery, UserRead
 from schemas.common import ListAll
 

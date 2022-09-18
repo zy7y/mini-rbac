@@ -4,8 +4,14 @@ from fastapi import Query
 
 from core.utils import list_to_tree
 from dbhelper.menu import get_menu
-from dbhelper.role import (del_role, get_role, get_role_menus, get_roles,
-                           new_role, put_role)
+from dbhelper.role import (
+    del_role,
+    get_role,
+    get_role_menus,
+    get_roles,
+    new_role,
+    put_role,
+)
 from schemas import ListAll, Response, RoleIn, RoleInfo, RoleQuery, RoleRead
 
 
@@ -22,7 +28,11 @@ async def role_has_menu(rid: int):
     menus = await get_role_menus(rid)
     for obj in menus:
         obj["meta"] = json.loads(obj["meta"]) if obj["meta"] is not None else None
-    return Response(data=list_to_tree(menus))
+    try:
+        result = list_to_tree(menus)
+    except KeyError:
+        return Response(code=400, msg="菜单缺少根节点.")
+    return Response(data=result)
 
 
 async def role_arr(
