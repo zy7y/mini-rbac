@@ -8,16 +8,9 @@ import { getRoles } from '@/service/role'
 import { columns, addUserRules, putUserRules } from './conf'
 import { message } from 'ant-design-vue'
 import { userStore } from '@/stores/user'
+import UserSearch from './user-search.vue'
 
 const store = userStore()
-
-/**查询表单响应式数据 */
-const queryFormRef = ref()
-
-const queryForm = reactive({
-  username: '',
-  nickname: ''
-})
 
 // 是否查询
 const isQuery = ref(false)
@@ -45,7 +38,7 @@ onMounted(() => {
 })
 
 // 获取页面数据
-const getPageData = () => {
+const getPageData = (form = null) => {
   let offset = pagination.current
   let limit = pagination.pageSize
   if (!isQuery.value) {
@@ -54,24 +47,21 @@ const getPageData = () => {
       pagination.total = res.data.total
     })
   } else {
-    queryUser({ offset, limit, username: queryForm.username, nickname: queryForm.nickname }).then(
-      (res) => {
-        dataSource.value = res.data.items
-        pagination.total = res.data.total
-      }
-    )
+    queryUser({ offset, limit, username: form?.username, nickname: form?.nickname }).then((res) => {
+      dataSource.value = res.data.items
+      pagination.total = res.data.total
+    })
   }
 }
 
 // 点击查询事件
-const clickQuery = () => {
+const clickQuery = (form) => {
   isQuery.value = true
-  getPageData()
+  getPageData(form)
 }
 
 // 重置搜索框
 const resetQueryForm = () => {
-  queryFormRef.value.resetFields()
   isQuery.value = false
   getPageData()
 }
@@ -114,8 +104,6 @@ const onOk = () => {
         addVisible.value = !addVisible.value
         // 2. 重置响应式数据
         formRef.value.resetFields()
-        // 3. 刷新页面数据
-        getPageData()
       }
     })
   })
@@ -194,20 +182,7 @@ const onCancelPut = () => {
 <template>
   <div class="user">
     <!-- 查询 -->
-    <div class="search">
-      <a-form ref="queryFormRef" layout="inline" :model="queryForm">
-        <a-form-item label="用户名" name="username">
-          <a-input placeholder="用户名" v-model:value="queryForm.username"> </a-input>
-        </a-form-item>
-        <a-form-item label="昵称" name="nickname">
-          <a-input placeholder="昵称" v-model:value="queryForm.nickname"> </a-input>
-        </a-form-item>
-        <a-form-item v-per="'user:query'">
-          <a-button type="primary" @click="clickQuery">查询</a-button>
-          <a-button style="margin-left: 10px" @click="resetQueryForm">重置</a-button>
-        </a-form-item>
-      </a-form>
-    </div>
+    <UserSearch @query-click="clickQuery" @reset-click="resetQueryForm" />
 
     <Table
       :columns="columns"

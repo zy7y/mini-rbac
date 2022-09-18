@@ -7,13 +7,9 @@ import { getMenus } from '@/service/menu'
 import { columns, rules, treeFieldNames } from './conf'
 import { message } from 'ant-design-vue'
 import { getMenus as getRoleMenu } from '@/service/user'
+import RoleSearch from './role-search.vue'
 
 /**查询表单响应式数据 */
-const queryFormRef = ref()
-
-const queryForm = reactive({
-  name: ''
-})
 
 // 是否查询
 const isQuery = ref(false)
@@ -41,7 +37,7 @@ onMounted(() => {
 })
 
 // 获取页面数据
-const getPageData = () => {
+const getPageData = (form = null) => {
   let offset = pagination.current
   let limit = pagination.pageSize
   if (!isQuery.value) {
@@ -50,7 +46,7 @@ const getPageData = () => {
       pagination.total = res.data.total
     })
   } else {
-    queryRole({ offset, limit, name: queryForm.name }).then((res) => {
+    queryRole({ offset, limit, name: form?.name }).then((res) => {
       dataSource.value = res.data.items
       pagination.total = res.data.total
     })
@@ -58,14 +54,13 @@ const getPageData = () => {
 }
 
 // 点击查询事件
-const clickQuery = () => {
+const clickQuery = (form) => {
   isQuery.value = true
-  getPageData()
+  getPageData(form)
 }
 
 // 重置搜索框
 const resetQueryForm = () => {
-  queryFormRef.value.resetFields()
   isQuery.value = false
   getPageData()
 }
@@ -209,17 +204,8 @@ const treeData = ref()
 <template>
   <div class="role">
     <!-- 查询 -->
-    <div class="search">
-      <a-form ref="queryFormRef" layout="inline" :model="queryForm">
-        <a-form-item label="名称" name="name">
-          <a-input placeholder="角色名称" v-model:value="queryForm.name"> </a-input>
-        </a-form-item>
-        <a-form-item v-per="'role:query'">
-          <a-button type="primary" @click="clickQuery">查询</a-button>
-          <a-button style="margin-left: 10px" @click="resetQueryForm">重置</a-button>
-        </a-form-item>
-      </a-form>
-    </div>
+
+    <RoleSearch @query-click="clickQuery" @reset-click="resetQueryForm"></RoleSearch>
 
     <Table
       :columns="columns"
