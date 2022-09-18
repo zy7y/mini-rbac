@@ -8,7 +8,8 @@ import { getRoles } from '@/service/role'
 import { columns, addUserRules, putUserRules } from './conf'
 import { message } from 'ant-design-vue'
 import { userStore } from '@/stores/user'
-import router from '@/router'
+
+const store = userStore()
 
 /**查询表单响应式数据 */
 const queryFormRef = ref()
@@ -157,30 +158,31 @@ const putUserForm = reactive({
 const putId = ref()
 
 //modal 事件
-const onOkPut = () => {
+const onOkPut = async () => {
   //校验数据
-  putUserFormRef.value.validateFields().then(() => {
+  putUserFormRef.value.validateFields().then(async () => {
     //验证通过
     const { nickname, password, roles } = putUserForm
     let rids = roles.map((e, i) => ({ rid: e, status: i === 0 ? 5 : 1 }))
-    putUser(putId.value, { nickname, password, roles: rids }).then((res) => {
-      if (res.msg === '请求成功') {
-        message.success('修改成功')
-        // 1. 关闭 modal
-        putVisible.value = !putVisible.value
-        // 2. 重置响应式数据
-        putUserFormRef.value.resetFields()
-        if (putId.value === userStore().userInfo.id) {
-          // 改了自己
-          message.warning('修改了自己，请重新登录')
-          userStore().$reset()
-          router.push('/login')
-        } else {
-          // 3. 刷新页面数据
-          getPageData()
+    const res = await putUser(putId.value, { nickname, password, roles: rids })
+    if (res.msg === '请求成功') {
+      message.success('修改成功')
+      // 1. 关闭 modal
+      putVisible.value = !putVisible.value
+      // 2. 重置响应式数据
+      putUserFormRef.value.resetFields()
+      // 修改了自己
+      if (putId.value === store.userInfo.id) {
+        // 并且修改了激活角色
+        if (rids[0]['rid'] !== store.userInfo.roles[0]['id']) {
+          store.getUserData(putId.value)
+          // 刷新组件 todo
         }
+      } else {
+        // 3. 刷新页面数据
+        getPageData()
       }
-    })
+    }
   })
 }
 

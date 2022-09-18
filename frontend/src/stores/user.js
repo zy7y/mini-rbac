@@ -91,6 +91,7 @@ export const userStore = defineStore(
       isLoading,
       selectKey,
       $reset,
+      getUserData,
       loginAction,
       loadRoleRouter,
       userSelectRole

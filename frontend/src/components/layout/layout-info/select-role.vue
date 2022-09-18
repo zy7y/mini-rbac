@@ -24,12 +24,8 @@ const showModal = () => {
 const handleOk = () => {
   loading.value = true
   store.userSelectRole(currentRoleId.value)
-  setTimeout(() => {
-    loading.value = false
-    visible.value = false
-    // 页面刷新-》 白屏
-    location.reload()
-  }, 1000)
+  // 刷新组件 todo
+  visible.value = false
 }
 
 const handleCancel = () => {
@@ -46,7 +42,14 @@ defineExpose({
     <a-modal v-model:visible="visible" title="切换角色" @ok="handleOk">
       <template #footer>
         <a-button key="back" @click="handleCancel">取消</a-button>
-        <a-button key="submit" type="primary" :loading="loading" @click="handleOk">确定</a-button>
+        <a-button
+          key="submit"
+          type="primary"
+          :loading="loading"
+          @click="handleOk"
+          :disabled="currentRoleId === store.userInfo.roles[0]['id']"
+          >确定</a-button
+        >
       </template>
       <span>选择角色：</span>
 
