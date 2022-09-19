@@ -1,23 +1,15 @@
 <script setup>
-import { ref, reactive } from 'vue'
+import { reactive } from 'vue'
+import useSearch from '@/hooks/useSearch'
 
 const emits = defineEmits(['queryClick', 'resetClick'])
-
-const formRef = ref()
 
 const queryForm = reactive({
   username: '',
   nickname: ''
 })
 
-const queryEvent = () => {
-  emits('queryClick', queryForm)
-}
-
-const resetEvent = () => {
-  formRef.value.resetFields()
-  emits('resetClick')
-}
+const { formRef, queryEvent, resetEvent } = useSearch(emits, queryForm)
 </script>
 
 <template>

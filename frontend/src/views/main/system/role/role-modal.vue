@@ -8,6 +8,8 @@ import { getMenus as getRoleMenu } from '@/service/user'
 import { getMenus } from '@/service/menu'
 import { userStore } from '@/stores/user'
 
+import useModal from '@/hooks/useModal'
+
 const props = defineProps({
   modalTitle: {
     // modal 右上角显示的title
@@ -20,17 +22,13 @@ const props = defineProps({
   }
 })
 
-const showModal = ref(false)
+const { showModal, updateId, formRef } = useModal()
 
-const formRef = ref()
 const roleForm = reactive({
   name: '',
   remark: '',
   menus: []
 })
-
-// 记录修改角色的ID
-const userId = ref()
 
 // menu数据
 const treeData = ref()
@@ -77,7 +75,7 @@ const getCurrentMenu = (record) => {
 const openModal = (record) => {
   showModal.value = true
   const { allMenus, checkMenus } = getCurrentMenu(record)
-  userId.value = record.id
+  updateId.value = record.id
   roleForm.name = record.name
   roleForm.remark = record.remark
   checkedKeys.value = checkMenus
@@ -98,7 +96,7 @@ const onOk = () => {
     if (props.modalType === 'create') {
       res = await addRole(roleForm)
     } else {
-      res = await putRole(userId.value, roleForm)
+      res = await putRole(updateId.value, roleForm)
     }
     message.success(res.msg)
     resetData()

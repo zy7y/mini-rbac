@@ -6,6 +6,7 @@ import { addUserRules, putUserRules } from './conf'
 import { addUser, putUser, getUserInfo } from '@/service/user'
 import { userStore } from '@/stores/user'
 import { getRoles } from '@/service/role'
+import useModal from '@/hooks/useModal'
 
 const props = defineProps({
   modalTitle: {
@@ -21,8 +22,9 @@ const props = defineProps({
 
 const store = userStore()
 
+const { showModal, updateId, formRef } = useModal()
+
 /** 页面数据 */
-const formRef = ref()
 
 // create form
 const newUserForm = reactive({
@@ -39,11 +41,6 @@ const putUserForm = reactive({
   roles: []
 })
 
-// modal 状态打开
-const showModal = ref(false)
-// 更新数据的 用户id
-const userId = ref()
-
 // 监听modal状态是否为打开 打开就请求数据
 const roleOptions = ref([])
 watch(showModal, async () => {
@@ -57,7 +54,7 @@ watch(showModal, async () => {
 const openModal = async (record) => {
   // 打开编辑的modal
   showModal.value = !showModal.value
-  userId.value = record.id
+  updateId.value = record.id
   // 加载当前用户id 具备的用户角色
   const res = await getUserInfo(record.id)
   putUserForm.roles = res.data.roles.map((e) => e.id)
@@ -76,15 +73,15 @@ const onOk = () => {
     } else {
       const { nickname, password, roles } = putUserForm
       let rids = roles.map((e, i) => ({ rid: e, status: i === 0 ? 5 : 1 }))
-      res = await putUser(userId.value, {
+      res = await putUser(updateId.value, {
         nickname,
         password,
         roles: rids
       })
-      if (userId.value === store.userInfo.id) {
+      if (updateId.value === store.userInfo.id) {
         // 并且修改了激活角色
         if (rids[0]['rid'] !== store.userInfo.roles[0]['id']) {
-          store.getUserData(userId.value)
+          store.getUserData(updateId.value)
         }
       }
     }

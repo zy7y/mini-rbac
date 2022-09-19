@@ -1,29 +1,42 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, reactive, toRefs } from 'vue'
 
 import { columns } from './conf'
 import { getMenus } from '@/service/menu'
 
 import Table from '@/components/table/table.vue'
+import MenuModal from './menu-modal.vue'
 
 // 列表数据
 const dataSource = ref([])
 
 getMenus().then((res) => (dataSource.value = res.data))
 
+const modalRef = ref()
+const modalConf = reactive({
+  title: '',
+  type: ''
+})
 // 新增
 const addClick = () => {
-  console.log('点击')
+  modalConf.title = '新增菜单'
+  modalConf.type = 'create'
+  modalRef.value.showModal = true
 }
 
 //
-const putClick = () => {
-  console.log('点击')
+const putClick = (record) => {
+  console.log(record)
+  modalConf.title = '编辑菜单'
+  modalConf.type = 'create'
+  modalRef.value.openModal(record)
 }
 
-const delClick = () => {
-  console.log('点击')
+const delClick = (record) => {
+  console.log('点击', record)
 }
+
+const { title, type } = toRefs(modalConf)
 </script>
 
 <template>
@@ -38,6 +51,7 @@ const delClick = () => {
       @delete-click="delClick"
     >
     </Table>
+    <MenuModal ref="modalRef" :modal-title="title" :modal-type="type"></MenuModal>
   </div>
 </template>
 

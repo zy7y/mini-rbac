@@ -65,10 +65,3 @@ export const columns = [
     width: 120
   }
 ]
-
-// 菜单类型映射
-export const menuType = {
-  0: '目录',
-  1: '菜单',
-  2: '按钮'
-}
