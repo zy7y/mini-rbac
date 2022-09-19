@@ -6,8 +6,8 @@ from schemas.common import ReadBase
 
 
 class MenuBasic(BaseModel):
-    name: str
-    meta: dict = Field(default=None, description="元信息")
+    name: str = Field(..., description="菜单名称")
+    icon: str = Field(default=None, description="菜单图标")
     path: Optional[str] = Field(default=None, description="前端路由地址")
     type: int = Field(description="0 目录 1 组件 2 按钮 3数据")
     component: Optional[str] = Field(default=None, description="前端组件地址")

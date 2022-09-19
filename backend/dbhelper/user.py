@@ -31,7 +31,6 @@ async def get_user_info(user: UserModel):
         """,
         [user.id],
     )
-
     return {
         **jsonable_encoder(user),
         "roles": sql_result,
@@ -81,9 +80,9 @@ async def put_user(uid: int, data: UserPut):
     """更新用户"""
     from core.security import get_password_hash
 
-    roles = data.roles
+    rids = data.roles
     del data.roles
-    for role in roles:
+    for role in rids:
         if await get_role({"id": role.rid, "status__not": 9}) is None:
             return role.rid
     # 更新用户
@@ -104,13 +103,12 @@ async def put_user(uid: int, data: UserPut):
     """,
         [uid],
     )
-    print(has_roles)
 
     # 2. 将先有的数据标记 删除
     [
         await db.execute_query_dict(
             """
-    update sys_user_role set status = 9 where rid = (?)
+    update sys_user_role set status = 9 where rid = (?) 
     """,
             [role["id"]],
         )
@@ -119,11 +117,13 @@ async def put_user(uid: int, data: UserPut):
 
     # 2. 新增次此更新的数据
     await UserRoleModel.bulk_create(
-        [UserRoleModel(uid=uid, **role.dict()) for role in roles]
+        [UserRoleModel(uid=uid, **role.dict()) for role in rids]
     )
 
 
 async def select_role(uid: int, rid: int):
     """用户切换角色"""
-    await UserRoleModel.filter(uid=uid, rid__not=rid).update(status=1)
-    return await UserRoleModel.filter(uid=uid, rid=rid).update(status=5)
+    # 1.将用户id 未删除角色状态置为正常 1 （ 除切换角色id ）
+    await UserRoleModel.filter(uid=uid, rid__not=rid, status__not=9).update(status=1)
+    # 2.将用户id 角色id 和当前角色匹配的数据置为选中
+    return await UserRoleModel.filter(uid=uid, rid=rid, status__not=9).update(status=5)

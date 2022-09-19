@@ -1,12 +1,13 @@
 <script setup>
 import { reactive, ref, watch } from 'vue'
-import { message } from 'ant-design-vue'
 import { addUserRules, putUserRules } from './conf'
 
 import { addUser, putUser, getUserInfo } from '@/service/user'
 import { userStore } from '@/stores/user'
 import { getRoles } from '@/service/role'
 import useModal from '@/hooks/useModal'
+import { messageTip } from '@/utils'
+import { message } from 'ant-design-vue'
 
 const props = defineProps({
   modalTitle: {
@@ -67,6 +68,7 @@ const openModal = async (record) => {
 const onOk = () => {
   formRef.value.validateFields().then(async () => {
     let res
+    let flag = false
     if (props.modalType === 'create') {
       newUserForm.roles = newUserForm.roles.map((e, i) => ({ rid: e, status: i === 0 ? 5 : 1 }))
       res = await addUser(newUserForm)
@@ -79,13 +81,14 @@ const onOk = () => {
         roles: rids
       })
       if (updateId.value === store.userInfo.id) {
-        // 并且修改了激活角色
-        if (rids[0]['rid'] !== store.userInfo.roles[0]['id']) {
-          store.getUserData(updateId.value)
-        }
+        message.warning('修改登录用户信息，重新登录生效.')
+        flag = true
       }
     }
-    message.success(res.msg)
+    if (!flag) {
+      messageTip(res)
+    }
+
     formRef.value.resetFields()
     showModal.value = !showModal.value
     store.isPush = true

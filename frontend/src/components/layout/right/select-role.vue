@@ -1,10 +1,11 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { userStore } from '@/stores/user'
+import { useRouter } from 'vue-router'
 
 const store = userStore()
+const router = useRouter()
 
-const loading = ref(false)
 const visible = ref(false)
 
 const currentRoleId = ref(store.userInfo.roles[0].id)
@@ -17,35 +18,32 @@ const options = computed(() => {
   }))
 })
 
-const showModal = () => {
-  visible.value = true
-}
-
 const handleOk = () => {
-  loading.value = true
+  visible.value = !visible.value
   store.userSelectRole(currentRoleId.value)
   // 刷新组件 todo
-  visible.value = false
+  router.replace({
+    path: '/back'
+  })
+  visible.value = !visible.value
 }
-
 const handleCancel = () => {
-  visible.value = false
+  visible.value = !visible.value
 }
 
 defineExpose({
-  showModal
+  visible
 })
 </script>
 
 <template>
   <div class="select-role">
-    <a-modal v-model:visible="visible" title="切换角色" @ok="handleOk">
+    <a-modal v-model:visible="visible" title="切换角色">
       <template #footer>
         <a-button key="back" @click="handleCancel">取消</a-button>
         <a-button
           key="submit"
           type="primary"
-          :loading="loading"
           @click="handleOk"
           :disabled="currentRoleId === store.userInfo.roles[0]['id']"
           >确定</a-button

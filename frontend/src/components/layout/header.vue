@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import UserInfo from '@/components/layout/layout-info/layout-info.vue'
+import UserInfo from '@/components/layout/right/info.vue'
 import HeaderCrumb from './header-crumb.vue'
 
 // 记录图标状态

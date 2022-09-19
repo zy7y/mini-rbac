@@ -1,7 +1,5 @@
 <script setup>
 import { ref, reactive, watch } from 'vue'
-import { message } from 'ant-design-vue'
-
 import { rules, treeFieldNames } from './conf'
 import { addRole, putRole } from '@/service/role'
 import { getMenus as getRoleMenu } from '@/service/user'
@@ -9,6 +7,7 @@ import { getMenus } from '@/service/menu'
 import { userStore } from '@/stores/user'
 
 import useModal from '@/hooks/useModal'
+import { messageTip } from '@/utils'
 
 const props = defineProps({
   modalTitle: {
@@ -98,9 +97,9 @@ const onOk = () => {
     } else {
       res = await putRole(updateId.value, roleForm)
     }
-    message.success(res.msg)
+    messageTip(res)
     resetData()
-    showModal.value = false
+    showModal.value = !showModal.value
     userStore().isPush = true
   })
 }

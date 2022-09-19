@@ -9,7 +9,7 @@ import { columns } from './conf'
 import UserSearch from './user-search.vue'
 import UserModal from './user-modal.vue'
 import { userStore } from '@/stores/user'
-import { message } from 'ant-design-vue'
+import { messageTip } from '@/utils'
 
 const store = userStore()
 
@@ -85,7 +85,7 @@ const resetQueryForm = () => {
 // 删除
 const delClick = async (record) => {
   const res = await delUser(record.id)
-  message.success(res.msg)
+  messageTip(res)
   getPageData()
 }
 
@@ -120,7 +120,8 @@ const putClick = async (record) => {
       @create-click="addClick"
       @update-click="putClick"
       @delete-click="delClick"
-    />
+    >
+    </Table>
 
     <!-- 新增&编辑 -->
     <UserModal ref="modalRef" :modal-title="modalConf.title" :modal-type="modalConf.type" />

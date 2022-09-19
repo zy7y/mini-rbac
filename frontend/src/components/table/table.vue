@@ -1,5 +1,6 @@
 <script setup>
-import { menuType, methodColor, tableTree } from './conf'
+import { tableTree } from './conf'
+import { menuType, methodColor } from '@/views/main/system/menu/conf'
 
 /**接受父组件传递过来的值 */
 defineProps({
@@ -73,8 +74,8 @@ const expand = tableTree()
       >
         <template #bodyCell="{ column, record }">
           <!-- 适配菜单表格 -->
-          <template v-if="column.key === 'meta'">
-            <component :is="$loadIconCpn(record.meta?.icon)"></component>
+          <template v-if="column.key === 'icon'">
+            <component :is="$loadIconCpn(record.icon)"></component>
           </template>
           <template v-if="column.key === 'type'">
             {{ menuType[record.type] }}

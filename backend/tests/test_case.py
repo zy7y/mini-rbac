@@ -13,29 +13,21 @@ dirs = [
     (
         "/menu",
         MenuIn(  # id 1
-            name="系统管理",
-            meta={"icon": "AppstoreOutlined"},
-            path="/system",
+            name="系统面板",
+            icon="DashboardOutlined",
+            path="/dashboard",
             type=0,
-            component=None,
             pid=0,
-            identifier=None,
-            api=None,
-            method=None,
         ).dict(),
     ),
     (
         "/menu",
         MenuIn(  # id 2
-            name="系统设置",
-            meta={"icon": "SettingOutlined"},
+            name="系统管理",
+            icon="AppstoreOutlined",
             path="/system",
             type=0,
-            component=None,
             pid=0,
-            identifier=None,
-            api=None,
-            method=None,
         ).dict(),
     ),
 ]
@@ -54,44 +46,44 @@ menus = [
         "/menu",
         MenuIn(  # id 3
             name="用户管理",
-            meta={"icon": "TeamOutlined", "title": "用户管理"},
+            icon="TeamOutlined",
             path="/system/user",
             type=1,
             component="/system/user/user.vue",
-            pid=1,
+            pid=2,
         ).dict(),
     ),
     (
         "/menu",
         MenuIn(  # id 4
             name="角色管理",
-            meta={"icon": "UserOutlined", "title": "角色管理"},
+            icon="UserOutlined",
             path="/system/role",
             type=1,
             component="/system/role/role.vue",
-            pid=1,
+            pid=2,
         ).dict(),
     ),
     (
         "/menu",
         MenuIn(  # id 5
             name="菜单管理",
-            meta={"icon": "MenuOutlined", "title": "菜单管理"},
+            icon="MenuOutlined",
             path="/system/menu",
             type=1,
             component="/system/menu/menu.vue",
-            pid=1,
+            pid=2,
         ).dict(),
     ),
     (
         "/menu",
         MenuIn(  # id 6
-            name="关于",
-            meta={"icon": "DashboardOutlined", "title": "关于"},
-            path="/setting/about",
+            name="数据面板",
+            icon="AreaChartOutlined",
+            path="/dashboard/index",
             type=1,
-            component="/setting/about/about.vue",
-            pid=2,
+            component="/dashboard/index/index.vue",
+            pid=1,
         ).dict(),
     ),
 ]
@@ -174,7 +166,6 @@ role_manager_pre = [
     ),
     MenuIn(
         name="角色查询",
-        meta={"icon": "Search"},
         type=2,
         identifier="role:query",
         api="/role/query",
@@ -260,13 +251,14 @@ menus_len = (
     + len(dirs)
     + len(role_manager_pre)
     + len(menu_manager_pre)
+    + 1
 )
 
 datas = [
     (
         "/role",
         RoleIn(
-            name="superStar",
+            name="超管",
             remark="全部权限",
             menus=[num for num in range(1, menus_len)],
         ),
@@ -276,7 +268,7 @@ datas = [
         "/user",
         UserAdd(
             username="admin",
-            nickname="666管理员",
+            nickname="乐师高渐离",
             password="123456",
             roles=[RoleActive(rid=1, status=5)],
         ),

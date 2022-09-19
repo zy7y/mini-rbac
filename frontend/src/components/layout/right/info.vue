@@ -14,7 +14,7 @@ const roleChangeRef = ref()
 const onClick = ({ key }) => {
   if (key === '1') {
     // 点击切换角色
-    roleChangeRef.value?.showModal()
+    roleChangeRef.value.visible = true
   } else {
     store.$reset()
     router.push('/login')

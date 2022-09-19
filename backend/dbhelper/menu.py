@@ -45,7 +45,7 @@ async def get_menu(kwargs):
 
 
 async def del_menu(mid: int):
-    """删除用户"""
+    """删除菜单"""
     return await MenuModel.filter(id=mid).update(status=9)
 
 

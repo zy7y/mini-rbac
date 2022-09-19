@@ -1,16 +1,33 @@
 <script setup>
-import { ref, reactive, toRefs } from 'vue'
+import { ref, reactive, toRefs, onMounted } from 'vue'
 
 import { columns } from './conf'
-import { getMenus } from '@/service/menu'
+import { delMenu, getMenus } from '@/service/menu'
 
 import Table from '@/components/table/table.vue'
 import MenuModal from './menu-modal.vue'
+import { userStore } from '@/stores/user'
+import { messageTip } from '@/utils'
+
+const store = userStore()
+
+store.$subscribe((mutation, state) => {
+  if (state.isPush) {
+    getPageData()
+    state.isPush = false
+  }
+})
 
 // 列表数据
 const dataSource = ref([])
 
-getMenus().then((res) => (dataSource.value = res.data))
+function getPageData() {
+  getMenus().then((res) => (dataSource.value = res.data))
+}
+
+onMounted(() => {
+  getPageData()
+})
 
 const modalRef = ref()
 const modalConf = reactive({
@@ -24,16 +41,16 @@ const addClick = () => {
   modalRef.value.showModal = true
 }
 
-//
 const putClick = (record) => {
-  console.log(record)
   modalConf.title = '编辑菜单'
-  modalConf.type = 'create'
+  modalConf.type = 'update'
   modalRef.value.openModal(record)
 }
 
-const delClick = (record) => {
-  console.log('点击', record)
+const delClick = async (record) => {
+  const res = await delMenu(record.id)
+  messageTip(res)
+  getPageData()
 }
 
 const { title, type } = toRefs(modalConf)

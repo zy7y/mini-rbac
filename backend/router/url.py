@@ -121,7 +121,6 @@ class Route(routing.APIRoute):
 
 
 has_perm = {"dependencies": [Depends(check_permissions)]}
-has_perm = {}
 
 routes = [
     Route.post("/login", endpoint=login, tags=["公共"], summary="登录"),

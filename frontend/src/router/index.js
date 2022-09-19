@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { message } from 'ant-design-vue'
 import { userStore } from '@/stores/user'
 
 const routes = [
@@ -21,6 +20,10 @@ const routes = [
   {
     path: '/:pathMatch(.*)*',
     component: () => import('@/views/error/404.vue')
+  },
+  {
+    path: '/back',
+    component: () => import('@/views/error/back.vue')
   }
 ]
 
@@ -31,18 +34,17 @@ const router = createRouter({
 
 // 导航守卫
 router.beforeEach((to) => {
-  // 修改页面标题
-  if (to.meta.title) {
-    document.title = to.meta.title
-  }
-
   if (to.path !== '/login') {
     if (userStore().token) {
       return
     }
-    message.warning('请登录')
     return '/login'
   }
+})
+
+router.afterEach((next) => {
+  // 修改页面标题
+  document.title = next.name || 'Mini RBAC'
 })
 
 export default router

@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 
 import SiderMenu from '@/components/layout/sider-menu.vue'
-import LayoutHeader from '@/components/layout/layout-header.vue'
+import Header from '@/components/layout/header.vue'
 
 // a-ayout-sider 折叠状态响应式数据
 const collapsed = ref(false)
@@ -23,7 +23,7 @@ const changeSiderFold = (subValue) => {
       <a-layout>
         <a-layout-header style="background: #fff; padding: 0">
           <!-- 页头 -->
-          <LayoutHeader @changeFold="changeSiderFold" />
+          <Header @changeFold="changeSiderFold" />
         </a-layout-header>
         <a-layout-content
           class="content"

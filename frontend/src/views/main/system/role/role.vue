@@ -8,6 +8,7 @@ import RoleSearch from './role-search.vue'
 import RoleModal from './role-modal.vue'
 
 import { userStore } from '@/stores/user'
+import { messageTip } from '@/utils'
 
 const store = userStore()
 
@@ -75,8 +76,9 @@ const resetQueryForm = () => {
 }
 
 // 删除
-const delClick = (record) => {
-  delRole(record.id)
+const delClick = async (record) => {
+  const res = await delRole(record.id)
+  messageTip(res)
   getPageData()
 }
 

@@ -26,8 +26,7 @@ async def role_has_menu(rid: int):
     rid: 角色ID
     """
     menus = await get_role_menus(rid)
-    for obj in menus:
-        obj["meta"] = json.loads(obj["meta"]) if obj["meta"] is not None else None
+
     try:
         result = list_to_tree(menus)
     except KeyError:
