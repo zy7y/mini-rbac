@@ -5,7 +5,7 @@ import EachartView from '@/components/echart/eachart-view.vue'
 import MarkdownView from '@/components/markdown/preview-view.vue'
 
 /** websocket */
-let ws = new WebSocket('ws://localhost:8000/ws')
+let ws = new WebSocket(import.meta.env.VITE_WS)
 
 // 响应式数据
 const data = reactive({

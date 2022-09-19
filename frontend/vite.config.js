@@ -25,10 +25,6 @@ export default defineConfig({
         target: 'http://localhost:8000',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '')
-      },
-      '/socket': {
-        target: 'ws://localhost:8000/ws',
-        ws: true
       }
     }
   }
