@@ -105,15 +105,7 @@ async def put_user(uid: int, data: UserPut):
     )
 
     # 2. 将先有的数据标记 删除
-    [
-        await db.execute_query_dict(
-            """
-    update sys_user_role set status = 9 where rid = (?) 
-    """,
-            [role["id"]],
-        )
-        for role in has_roles
-    ]
+    [await UserRoleModel.filter(rid=role["id"]).update(status=9) for role in has_roles]
 
     # 2. 新增次此更新的数据
     await UserRoleModel.bulk_create(

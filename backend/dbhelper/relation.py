@@ -1,5 +1,3 @@
-from tortoise import connections
-
 from dbhelper.menu import get_menu
 from models import RoleMenuModel, UserRoleModel
 from schemas import UserRole
@@ -16,15 +14,8 @@ async def role_assigned_menu(data):
         if await get_menu({"id": mid}) is None:
             return mid
 
-    # todo 性能优化
-    db = connections.get("default")
     # 1. 先把所有数据做删除
-    await db.execute_query_dict(
-        """
-    update sys_role_menu set status = 9 where rid = (?)
-    """,
-        [data.rid],
-    )
+    await RoleMenuModel.filter(rid=data.rid).update(status=9)
     # 2. 新增数据
     await RoleMenuModel.bulk_create(
         [RoleMenuModel(rid=data.rid, mid=mid) for mid in data.menus]
