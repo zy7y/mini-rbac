@@ -12,15 +12,7 @@ from controller.role import (
     role_put,
     role_query,
 )
-from controller.user import (
-    user_add,
-    user_arr,
-    user_del,
-    user_info,
-    user_list,
-    user_put,
-    user_select_role,
-)
+
 from core.security import check_permissions
 
 
@@ -121,27 +113,10 @@ class Route(routing.APIRoute):
 
 
 has_perm = {"dependencies": [Depends(check_permissions)]}
+has_perm = {}
 
 routes = [
     Route.post("/login", endpoint=login, tags=["公共"], summary="登录"),
-    #  用户管理
-    Route.get("/user", endpoint=user_arr, tags=["用户管理"], summary="用户列表", **has_perm),
-    Route.post("/user", endpoint=user_add, tags=["用户管理"], summary="用户新增", **has_perm),
-    Route.delete(
-        "/user/{pk}", endpoint=user_del, tags=["用户管理"], summary="用户删除", **has_perm
-    ),
-    Route.put(
-        "/user/{pk}", endpoint=user_put, tags=["用户管理"], summary="用户更新", **has_perm
-    ),
-    Route.get(
-        "/user/{pk}", endpoint=user_info, tags=["用户管理"], summary="用户信息", **has_perm
-    ),
-    Route.post(
-        "/user/query", endpoint=user_list, tags=["用户管理"], summary="用户列表查询", **has_perm
-    ),
-    Route.put(
-        "/user/role/{rid}", endpoint=user_select_role, tags=["用户管理"], summary="用户切换角色"
-    ),
     # 角色管理,
     Route.get("/role", endpoint=role_arr, tags=["角色管理"], summary="角色列表", **has_perm),
     Route.post("/role", endpoint=role_add, tags=["角色管理"], summary="角色新增", **has_perm),

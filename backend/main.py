@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 
+import router.user
 from core.events import close_orm, init_orm
 from core.exceptions import exception_handlers
 from core.log import logger
@@ -13,6 +14,7 @@ app = FastAPI(
     middleware=middlewares,
     exception_handlers=exception_handlers,
 )
+app.include_router(router=router.user.router)
 
 
 if __name__ == "__main__":
