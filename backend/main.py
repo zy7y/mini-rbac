@@ -5,6 +5,8 @@ from core.exceptions import exception_handlers
 from core.middleware import middlewares
 from core.utils import load_routers
 
+
+
 app = FastAPI(
     on_startup=[init_orm],
     on_shutdown=[close_orm],
