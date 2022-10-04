@@ -6,10 +6,8 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 
+from core.dbhelper import has_permissions, has_roles, has_user
 from core.exceptions import PermissionsError, TokenAuthFailure
-from dbhelper.menu import get_apis
-from dbhelper.user import get_user, get_user_info
-from models import UserModel
 
 # JWT
 SECRET_KEY = "lLNiBWPGiEmCLLR9kRGidgLY7Ac1rpSWwfGzTJpTmCU"
@@ -59,20 +57,20 @@ async def check_token(security: HTTPAuthorizationCredentials = Depends(bearer)):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
-        return await get_user({"username": username})
+        return await has_user(username)
     except JWTError:
         raise TokenAuthFailure(403, "认证失败")
 
 
-async def check_permissions(request: Request, user: UserModel = Depends(check_token)):
+async def check_permissions(request: Request, user=Depends(check_token)):
     """检查接口权限"""
     # 查询当前激活角色
-    result = await get_user_info(user)
-    active_rid = result["roles"][0]["id"]
+    roles = await has_roles(user.id)
+    active_rid = roles[0]["id"]
 
     # 白名单 登录用户信息， 登录用户菜单信息
     whitelist = [(f"/user/{user.id}", "GET"), (f"/role/{active_rid}/menu", "GET")] + [
-        (f"/user/role/{rid['id']}", "PUT") for rid in result["roles"]
+        (f"/user/role/{rid['id']}", "PUT") for rid in roles
     ]
 
     if (request.url.path, request.method) in whitelist:
@@ -82,11 +80,11 @@ async def check_permissions(request: Request, user: UserModel = Depends(check_to
     for k, v in request.path_params.items():
         api = api.replace(v, "{%s}" % k)
 
-    # 2. 登录之后查一次 后面去结果查 todo 更新权限时需要更新 , 最好结果放redis
+    # todo 结果放redis
     cache_key = f"{user.username}_{active_rid}"
     # 缓存到fastapi 应用实例中
     if not hasattr(request.app.state, cache_key):
-        setattr(request.app.state, cache_key, await get_apis(active_rid))
+        setattr(request.app.state, cache_key, await has_permissions(active_rid))
     if {"api": api, "method": request.method} not in getattr(
         request.app.state, cache_key
     ):

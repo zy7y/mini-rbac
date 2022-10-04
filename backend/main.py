@@ -13,9 +13,7 @@ app = FastAPI(
     exception_handlers=exception_handlers,
 )
 
-load_routers(
-    app, "controller", no_depends="common", depends=[Depends(check_permissions)]
-)
+load_routers(app, "router", no_depends="auth", depends=[Depends(check_permissions)])
 
 if __name__ == "__main__":
     import uvicorn
