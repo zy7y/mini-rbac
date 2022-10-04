@@ -1,9 +1,9 @@
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 
 from core.events import close_orm, init_orm
 from core.exceptions import exception_handlers
-from core.log import logger
 from core.middleware import middlewares
+from core.security import check_permissions
 from core.utils import load_routers
 
 app = FastAPI(
@@ -13,7 +13,9 @@ app = FastAPI(
     exception_handlers=exception_handlers,
 )
 
-load_routers(app, "controller")
+load_routers(
+    app, "controller", no_depends="common", depends=[Depends(check_permissions)]
+)
 
 if __name__ == "__main__":
     import uvicorn

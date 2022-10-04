@@ -51,7 +51,12 @@ def get_system_info():
 
 
 def load_routers(
-    app, package_path: str = "router", router_name: str = "router", is_init=False
+    app,
+    package_path: str = "router",
+    router_name: str = "router",
+    is_init=False,
+    no_depends="common",
+    depends: list = None,
 ):
     """
     自动注册路由
@@ -59,6 +64,8 @@ def load_routers(
     :param package_path: 路由包所在路径，默认相对路径router包
     :param router_name: APIRouter实例名称，需所有实例统一，默认router
     :param is_init: 是否在包中的__init__.py中导入了所有APIRouter实例，默认否
+    :param no_depends: 不需要依赖注入的模块（py文件）名，默认common
+    :param depends: 依赖注入列表 默认为None
     :return: 默认None
     """
 
@@ -66,9 +73,15 @@ def load_routers(
         """注册路由，module_obj： 模块对象"""
         if hasattr(module_obj, router_name):
             router_obj = getattr(module_obj, router_name)
-            app.include_router(router_obj)
+            if no_depends in module_obj.__name__:
+                kwargs = dict(router=router_obj)
+            else:
+                kwargs = dict(router=router_obj, dependencies=depends)
+            app.include_router(**kwargs)
 
     logger.info("开始扫描路由。")
+    if depends is None:
+        depends = []
     if is_init:
         # 1. init 导入了其他自文件包时
         for _, module in inspect.getmembers(
