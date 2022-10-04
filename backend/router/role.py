@@ -1,33 +1,10 @@
-"""
-    Route.post("/role", endpoint=role_add, tags=["角色管理"], summary="角色新增", **has_perm),
-    Route.delete(
-        "/role/{pk}", endpoint=role_del, tags=["角色管理"], summary="角色删除", **has_perm
-    ),
-    Route.get(
-        "/role/{rid}/menu",
-        endpoint=role_has_menu,
-        tags=["角色管理"],
-        summary="查询角色拥有权限",
-        **has_perm
-    ),
-    Route.put(
-        "/role/{pk}", endpoint=role_put, tags=["角色管理"], summary="角色更新", **has_perm
-    ),
-    Route.post(
-        "/role/query", endpoint=role_query, tags=["角色管理"], summary="角色条件查询", **has_perm
-    ),
-"""
+from fastapi import APIRouter, Query
 
-from fastapi import APIRouter, Depends, Query
-
-from core.security import check_permissions
 from schemas import common as BaseSchema
 from schemas import role as RoleSchema
-from service import role as RoleService
+from service.role import service as RoleService
 
-router = APIRouter(
-    prefix="/role", tags=["角色管理"], dependencies=[Depends(check_permissions)]
-)
+router = APIRouter(prefix="/role", tags=["角色管理"])
 
 Response = BaseSchema.Response
 ListAll = BaseSchema.ListAll
@@ -40,9 +17,30 @@ async def role_list(
     offset: int = Query(default=1, description="偏移量-页码"),
     limit: int = Query(default=10, description="数据量"),
 ):
-    return await RoleService.get_role_list(offset, limit)
+    return await RoleService.get_items(offset, limit)
 
 
 @router.post("/query", summary="角色查询", response_model=Response[role_list_schema])
 async def role_query(query: RoleSchema.RoleQuery):
-    return await RoleService.query_role_list(query)
+    return await RoleService.query_items(query)
+
+
+@router.post("", summary="角色新增", response_model=Response[RoleSchema.RoleInfo])
+async def role_create(data: RoleSchema.RoleIn):
+    return await RoleService.create_item(data)
+
+
+@router.get("/{rid}/menu", summary="查询角色拥有权限", response_model=Response)
+async def role_has_menu(rid: int):
+    return await RoleService.has_tree_menus(rid)
+
+
+@router.delete("/{pk}", summary="角色删除", response_model=Response)
+async def role_del(pk: int):
+    return await RoleService.delete_item(pk)
+
+
+@router.put("/{pk}", summary="角色更新", response_model=Response)
+async def role_put(pk: int, data: RoleSchema.RoleIn):
+    """更新角色"""
+    return await RoleService.update_item(pk, data)

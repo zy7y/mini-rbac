@@ -1,65 +1,90 @@
+from fastapi.encoders import jsonable_encoder
+
+from core.dbhelper import RoleDao, UserDao, UserRoleDao, has_roles
 from core.security import get_password_hash
-from dbhelper import user as UserDao
+from core.service import Service
 
 
-async def get_user_list(offset, limit):
-    """获取用户列表"""
-    skip = (offset - 1) * limit
-    users, count = await UserDao.get_users(skip, limit)
-    return dict(data=dict(total=count, items=users))
+class UserService(Service):
+    def __init__(self):
+        super(UserService, self).__init__(UserDao)
+
+    async def create_item(self, data):
+        """创建用户"""
+        # 检查用户是否存在
+        if await self.dao.select({"username": data.username}) is not None:
+            return dict(code=400, msg="用户名已存在")
+        rids = data.roles
+        del data.roles
+        data.password = get_password_hash(data.password)
+        # 检查选中的角色是否存在
+        for role in rids:
+            if await RoleDao.select(dict(id=role.rid, status__not=9)) is None:
+                return dict(code=400, msg=f"角色{role.rid}不存在")
+
+        # 创建用户- 用户表写入数据
+        user_obj = await UserDao.insert(data.dict())
+        # 关联表写入数据
+        await UserRoleDao.inserts(
+            [dict(rid=role.rid, uid=user_obj.id, status=role.status) for role in rids]
+        )
+        return dict(data=user_obj)
+
+    async def get_item(self, pk):
+        """获取用户信息"""
+        user_obj = await self.dao.select({"id": pk})
+        if user_obj is None:
+            return dict(code=400, msg="用户不存在")
+        roles = await has_roles(user_obj.id)
+        return dict(data=dict(**jsonable_encoder(user_obj), roles=roles))
+
+    async def update_item(self, pk, data):
+        """用户编辑修改"""
+        if await self.dao.select({"id": pk}) is None:
+            return dict(code=400, msg="用户不存在")
+
+        rids = data.roles
+        del data.roles
+        for role in rids:
+            if await RoleDao.select({"id": role.rid, "status__not": 9}) is None:
+                return role.rid
+        # 更新用户
+        if data.password != "加密之后的密码":
+            data.password = get_password_hash(data.password)
+        else:
+            del data.password
+        await UserDao.update(dict(id=pk), data.dict())
+
+        # todo 1. 先前有的角色，这次更新成没有 2. 先前没有的角色 这次更新成有， 3. 只更新了状态
+
+        roles = await has_roles(pk)
+
+        # 2. 将先有的数据标记 删除
+        [
+            await UserRoleDao.update(dict(rid=role["id"], uid=pk), dict(status=9))
+            for role in roles
+        ]
+
+        # 2. 新增次此更新的数据
+        await UserRoleDao.inserts(
+            [dict(role.dict(), uid=pk, status=role.status) for role in rids]
+        )
+        return dict()
+
+    @staticmethod
+    async def change_current_role(uid, rid):
+        """用户切换角色"""
+        # 1.将用户id 未删除角色状态置为正常 1 （ 除切换角色id ）
+        await UserRoleDao.update(
+            dict(uid=uid, rid__not=rid, status__not=9), dict(status=1)
+        )
+        # 2.将用户id 角色id 和当前角色匹配的数据置为选中
+        res = await UserRoleDao.update(
+            dict(uid=uid, rid=rid, status__not=9), dict(status=5)
+        )
+        if res == 0:
+            return dict(code=400, msg=f"角色不存在{res}")
+        return dict()
 
 
-async def query_user_list(query):
-    """查询用户列表"""
-    size = query.limit
-    skip = (query.offset - 1) * size
-    del query.offset, query.limit
-    users, count = await UserDao.get_users(skip, size, query.dict())
-    return dict(data=dict(total=count, items=users))
-
-
-async def user_create(data):
-    """创建用户"""
-    if await UserDao.get_user({"username": data.username}) is not None:
-        return dict(code=400, msg="用户名已存在")
-    rids = data.roles
-    del data.roles
-    data.password = get_password_hash(data.password)
-    result = await UserDao.insert_user(data, rids)
-    if isinstance(result, int):
-        return dict(code=400, msg=f"角色{result}不存在")
-    return dict(data=result)
-
-
-async def user_delete(pk):
-    """逻辑删除用户"""
-    if await UserDao.del_user(pk) == 0:
-        return dict(code=400, msg="用户不存在")
-    return dict()
-
-
-async def user_info(pk):
-    """获取用户信息"""
-    obj = await UserDao.get_user({"id": pk})
-    if obj is None:
-        return dict(code=400, msg="用户不存在")
-    return dict(data=await UserDao.get_user_info(obj))
-
-
-async def user_edit(pk, data):
-    """用户编辑修改"""
-    if await UserDao.get_user({"id": pk}) is None:
-        return dict(code=400, msg="用户不存在")
-
-    result = await UserDao.put_user(pk, data)
-    if isinstance(result, int):
-        return dict(code=400, msg=f"角色不存在{result}")
-    return dict()
-
-
-async def change_current_role(uid, rid):
-    """用户切换角色"""
-    res = await UserDao.select_role(uid, rid)
-    if res == 0:
-        return dict(code=400, msg=f"角色不存在{res}")
-    return dict()
+service = UserService()

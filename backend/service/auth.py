@@ -2,14 +2,14 @@ import asyncio
 
 from websockets.exceptions import WebSocketException
 
+from core.dbhelper import has_user
 from core.security import generate_token, verify_password
 from core.utils import get_system_info
-from dbhelper import user as UserDao
 
 
 async def user_login(data):
     """用户登录"""
-    user_obj = await UserDao.get_user({"username": data.username, "status__not": 9})
+    user_obj = await has_user(data.username)
     if user_obj:
         if verify_password(data.password, user_obj.password):
             return dict(data=dict(id=user_obj.id, token=generate_token(data.username)))
