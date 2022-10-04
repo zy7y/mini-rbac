@@ -7,3 +7,4 @@ requests==2.28.1
 tortoise-orm==0.19.2
 uvicorn==0.18.3
 websockets==10.3
+loguru=0.6.0

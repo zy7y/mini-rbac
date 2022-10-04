@@ -1,5 +1,6 @@
 from core.utils import list_to_tree
-from dbhelper.menu import del_menu, get_menu, get_tree_menu, insert_menu, put_menu
+from dbhelper.menu import (del_menu, get_menu, get_tree_menu, insert_menu,
+                           put_menu)
 from schemas import MenuIn, MenuRead, Response
 
 

@@ -71,8 +71,9 @@ async def check_permissions(request: Request, user: UserModel = Depends(check_to
     active_rid = result["roles"][0]["id"]
 
     # 白名单 登录用户信息， 登录用户菜单信息
-    whitelist = [(f"/user/{user.id}", "GET"), (f"/role/{active_rid}/menu", "GET")] + \
-        [(f"/user/role/{rid['id']}", "PUT") for rid in result['roles']]
+    whitelist = [(f"/user/{user.id}", "GET"), (f"/role/{active_rid}/menu", "GET")] + [
+        (f"/user/role/{rid['id']}", "PUT") for rid in result["roles"]
+    ]
 
     # 白名单 登录用户信息， 登录用户菜单信息
     if (request.url.path, request.method) in whitelist:

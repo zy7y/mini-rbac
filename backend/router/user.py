@@ -1,11 +1,11 @@
-from fastapi import APIRouter, Query, Depends
+from fastapi import APIRouter, Depends, Query
 
 from core.security import check_permissions
 from schemas import common as BaseSchema
 from schemas import user as UserSchema
 from service import user as UserService
 
-router = APIRouter(prefix="/user", tags=['用户管理'])
+router = APIRouter(prefix="/user", tags=["用户管理"])
 
 Response = BaseSchema.Response
 ListAll = BaseSchema.ListAll
@@ -14,8 +14,10 @@ user_list_schema = ListAll[list[UserSchema.UserRead]]
 
 
 @router.get("", summary="用户列表", response_model=Response[user_list_schema])
-async def user_list(offset: int = Query(default=1, description="偏移量-页码"),
-                    limit: int = Query(default=10, description="数据量")):
+async def user_list(
+    offset: int = Query(default=1, description="偏移量-页码"),
+    limit: int = Query(default=10, description="数据量"),
+):
     return await UserService.get_user_list(offset, limit)
 
 
@@ -45,6 +47,7 @@ async def user_update(pk: int, data: UserSchema.UserPut):
 
 
 @router.put("/role/{rid}", summary="用户切换角色", response_model=Response)
-async def user_change_role(rid: int, user: UserSchema.UserRead = Depends(check_permissions)):
-    print(user.username, user.id)
+async def user_change_role(
+    rid: int, user: UserSchema.UserRead = Depends(check_permissions)
+):
     return await UserService.change_current_role(user.id, rid)
