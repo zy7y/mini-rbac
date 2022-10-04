@@ -1,4 +1,9 @@
+import importlib
+import inspect
+import os
 import random
+
+from core.log import logger
 
 
 def list_to_tree(
@@ -43,3 +48,47 @@ def get_system_info():
             "user": f"{random.randint(1, 50)}",
         },
     }
+
+
+def load_routers(
+    app, package_path: str = "router", router_name: str = "router", is_init=False
+):
+    """
+    自动注册路由
+    :param app: FastAPI 实例对象 或者 APIRouter对象
+    :param package_path: 路由包所在路径，默认相对路径router包
+    :param router_name: APIRouter实例名称，需所有实例统一，默认router
+    :param is_init: 是否在包中的__init__.py中导入了所有APIRouter实例，默认否
+    :return: 默认None
+    """
+
+    def __register(module_obj):
+        """注册路由，module_obj： 模块对象"""
+        if hasattr(module_obj, router_name):
+            router_obj = getattr(module_obj, router_name)
+            app.include_router(router_obj)
+
+    logger.info("开始扫描路由。")
+    if is_init:
+        # 1. init 导入了其他自文件包时
+        for _, module in inspect.getmembers(
+            importlib.import_module(package_path), inspect.ismodule
+        ):
+            __register(module)
+
+    else:
+        # 2. 排除init文件时 的情况
+        for _, _, files in os.walk(package_path):
+            for file in files:
+                if file.endswith(".py") and file != "__init__.py":
+                    module = importlib.import_module(f"{package_path}.{file[:-3]}")
+                    __register(module)
+
+    for route in app.routes:
+        try:
+            logger.debug(
+                f"{route.path}, {route.methods}, {route.__dict__.get('summary')}"
+            )
+        except AttributeError as e:
+            logger.error(e)
+    logger.info("👌路由注册完成✅。")
