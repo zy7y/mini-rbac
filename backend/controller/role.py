@@ -1,6 +1,4 @@
-import json
-
-from fastapi import Query
+from fastapi import APIRouter, Query
 
 from core.utils import list_to_tree
 from dbhelper.menu import get_menu
@@ -8,13 +6,17 @@ from dbhelper.role import (del_role, get_role, get_role_menus, get_roles,
                            new_role, put_role)
 from schemas import ListAll, Response, RoleIn, RoleInfo, RoleQuery, RoleRead
 
+router = APIRouter(prefix="/role", tags=["角色管理"])
 
-async def role_add(data: RoleIn) -> Response[RoleInfo]:
+
+@router.post("", summary="角色新增", response_model=Response[RoleInfo])
+async def role_add(data: RoleIn):
     if result := await new_role(data):
         return Response(data=result)
     return Response(code=400, msg="菜单不存在")
 
 
+@router.get("/{rid}/menu", summary="查询角色拥有权限", response_model=Response)
 async def role_has_menu(rid: int):
     """
     rid: 角色ID
@@ -28,24 +30,26 @@ async def role_has_menu(rid: int):
     return Response(data=result)
 
 
+@router.get("", summary="角色列表", response_model=Response[ListAll[list[RoleRead]]])
 async def role_arr(
     offset: int = Query(default=1, description="偏移量-页码"),
     limit: int = Query(default=10, description="数据量"),
-) -> Response[ListAll[list[RoleRead]]]:
+):
     skip = (offset - 1) * limit
     roles, count = await get_roles(skip, limit)
     return Response(data=ListAll(total=count, items=roles))
 
 
-async def role_del(pk: int) -> Response:
+@router.delete("/{pk}", summary="角色删除", response_model=Response)
+async def role_del(pk: int):
     if await del_role(pk) == 0:
         return Response(code=400, msg="角色不存在")
     return Response()
 
 
-async def role_put(pk: int, data: RoleIn) -> Response:
+@router.put("/{pk}", summary="角色更新", response_model=Response)
+async def role_put(pk: int, data: RoleIn):
     """更新角色"""
-    print(await get_role({"id": pk}))
     if await get_role({"id": pk}) is None:
 
         return Response(code=400, msg="角色不存在")
@@ -58,7 +62,8 @@ async def role_put(pk: int, data: RoleIn) -> Response:
     return Response()
 
 
-async def role_query(query: RoleQuery) -> Response[ListAll[list[RoleRead]]]:
+@router.post("/query", summary="角色查询", response_model=Response[ListAll[list[RoleRead]]])
+async def role_query(query: RoleQuery):
     """post条件查询角色表"""
     size = query.limit
     skip = (query.offset - 1) * size

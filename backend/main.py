@@ -1,11 +1,10 @@
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 
 from core.events import close_orm, init_orm
 from core.exceptions import exception_handlers
 from core.middleware import middlewares
+from core.security import check_permissions
 from core.utils import load_routers
-
-
 
 app = FastAPI(
     on_startup=[init_orm],
@@ -14,6 +13,9 @@ app = FastAPI(
     exception_handlers=exception_handlers,
 )
 
-load_routers(app)
+load_routers(app, "router", no_depends="auth", depends=[Depends(check_permissions)])
 
-# uvicorn main:app --reload
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run("main:app", reload=True)
