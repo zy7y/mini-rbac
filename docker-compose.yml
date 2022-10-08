@@ -1,0 +1,22 @@
+version: "3"
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: mini-rbac
+    ports:
+      - "1855:80"
+
+  frontend:
+    build:
+      # 上下文管理， 执行frontend 下的 Dockerfile
+      context: ./frontend
+      dockerfile: Dockerfile
+    # 容器名称
+    container_name: mini-web
+    # 宿主机2152 端口 绑定 容器中的80 端口
+    ports:
+      - "1856:80"
+    depends_on:            # 依赖于backend容器，被依赖容器启动后此web容器才可启动
+    - backend
