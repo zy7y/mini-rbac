@@ -144,5 +144,5 @@ async def has_permissions(rid, is_menu=False):
     sql = f"""
         select {filters} 
         FROM sys_menu as m, sys_role_menu as srm WHERE m.id = srm.mid
-        AND srm.rid = (?)  and m.status != 9 order by m.id asc"""
+        AND srm.rid = (?)  and m.status != 9 and srm.status !=9 order by m.id asc"""
     return await RoleMenuDao.raw_sql(sql, [rid])
