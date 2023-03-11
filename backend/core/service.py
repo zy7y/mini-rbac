@@ -2,7 +2,6 @@ from core.dbhelper import DbHelper
 
 
 class Service:
-
     filter_del = {"status__not": 9}
 
     def __init__(self, dao: DbHelper):

@@ -20,7 +20,6 @@ def list_to_tree(
     menu_map = {menu["id"]: menu for menu in menus}
     arr = []
     for menu in menus:
-
         # 有父级
         if mid := menu.get(parent_flag):
             # 有 子项的情况
@@ -79,7 +78,7 @@ def load_routers(
                 kwargs = dict(router=router_obj, dependencies=depends)
             app.include_router(**kwargs)
 
-    logger.info("开始扫描路由。")
+    logger.info("♻️开始扫描路由。")
     if depends is None:
         depends = []
     if is_init:
@@ -99,9 +98,9 @@ def load_routers(
 
     for route in app.routes:
         try:
-            logger.debug(
-                f"{route.path}, {route.methods}, {route.__dict__.get('summary')}"
+            logger.info(
+                f"🦌{route.path}, {route.methods}, {route.__dict__.get('summary')}"
             )
         except AttributeError as e:
             logger.error(e)
-    logger.info("👌路由注册完成✅。")
+    logger.info("®️路由注册完成✅。")

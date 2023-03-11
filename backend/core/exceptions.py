@@ -4,7 +4,6 @@ from starlette.responses import JSONResponse
 
 
 class TokenAuthFailure(HTTPException):
-
     pass
 
 

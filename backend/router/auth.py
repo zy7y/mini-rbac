@@ -9,8 +9,8 @@ router = APIRouter(tags=["公共"])
 LoginResult = BaseSchema.Response[BaseSchema.LoginResult]
 
 
-@router.post("/login", summary="登录", response_model=LoginResult)
-async def login(data: BaseSchema.LoginForm):
+@router.post("/login", summary="登录")
+async def login(data: BaseSchema.LoginForm) -> LoginResult:
     return await AuthService.user_login(data)
 
 

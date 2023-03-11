@@ -26,8 +26,8 @@ class ReadBase(BaseModel):
 class LoginForm(BaseModel):
     """用户登录参数"""
 
-    username: str = Field(..., description="账号", max_length=12, min_length=3)
-    password: str = Field(..., description="密码", min_length=6, max_length=16)
+    username: str = Field("admin", description="账号", max_length=12, min_length=3)
+    password: str = Field("123456", description="密码", min_length=6, max_length=16)
 
 
 class LoginResult(BaseModel):
@@ -41,8 +41,8 @@ class LoginResult(BaseModel):
 class QueryData(BaseModel):
     """分页查询基础数据"""
 
-    offset: int = 1
-    limit: int = 10
+    offset: int = Field(default=1, description="页码", ge=1)
+    limit: int = Field(default=10, description="数量", ge=1)
 
 
 class ListAll(GenericModel, Generic[T]):
