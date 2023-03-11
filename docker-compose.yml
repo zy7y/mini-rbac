@@ -5,6 +5,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     container_name: mini-rbac
+    command: gunicorn -w 4 -k uvicorn.workers.UvicornWorker main:app --bind 0.0.0.0:80
     ports:
       - "1855:80"
 
@@ -18,5 +19,5 @@ services:
     # 宿主机2152 端口 绑定 容器中的80 端口
     ports:
       - "1856:80"
-    depends_on:            # 依赖于backend容器，被依赖容器启动后此web容器才可启动
-    - backend
+    depends_on: # 依赖于backend容器，被依赖容器启动后此web容器才可启动
+      - backend
