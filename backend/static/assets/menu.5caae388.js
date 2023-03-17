@@ -1,0 +1,1 @@
+import{cK as u}from"./index.ab0d47a4.js";function r(e){return u({url:"/menu",params:e})}function o(e){return u({url:`/menu/${e}`,method:"delete"})}function m(e){return u({url:"/menu",method:"post",data:e})}function d(e,n){return u({url:`/menu/${e}`,method:"put",data:n})}export{m as a,o as d,r as g,d as p};
