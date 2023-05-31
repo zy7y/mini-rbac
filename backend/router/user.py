@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends
+from typing import List
 
 from core.security import check_permissions
 from schemas import common as BaseSchema
@@ -11,7 +12,7 @@ router = APIRouter(prefix="/user", tags=["用户管理"])
 Response = BaseSchema.Response
 ListAll = BaseSchema.ListAll
 
-user_list_schema = ListAll[list[UserSchema.UserRead]]
+user_list_schema = ListAll[List[UserSchema.UserRead]]
 
 
 @router.get("", summary="用户列表")

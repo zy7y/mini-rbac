@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends
+from typing import List
 
 from schemas import common as BaseSchema
 from schemas import role as RoleSchema
@@ -10,7 +11,7 @@ router = APIRouter(prefix="/role", tags=["角色管理"])
 Response = BaseSchema.Response
 ListAll = BaseSchema.ListAll
 
-role_list_schema = ListAll[list[RoleSchema.RoleRead]]
+role_list_schema = ListAll[List[RoleSchema.RoleRead]]
 
 
 @router.get("", summary="角色列表")

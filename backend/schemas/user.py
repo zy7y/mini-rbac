@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 
 from pydantic import BaseModel, Field
 
@@ -40,7 +40,7 @@ class UserHasRole(BaseModel):
 class UserInfo(UserRead):
     """用户信息模型"""
 
-    roles: list[UserHasRole] = Field(..., description="用户拥有角色")
+    roles: List[UserHasRole] = Field(..., description="用户拥有角色")
 
 
 class RoleActive(BaseModel):
@@ -51,7 +51,7 @@ class RoleActive(BaseModel):
 class UserAdd(UserIn):
     """新增用户模型"""
 
-    roles: list[RoleActive] = Field(..., description="选择角色列表")
+    roles: List[RoleActive] = Field(..., description="选择角色列表")
 
 
 class UserQuery(QueryData):
@@ -66,4 +66,4 @@ class UserPut(BaseModel):
 
     nickname: str = Field(..., description="用户昵称")
     password: str = Field(..., description="密码")
-    roles: list[RoleActive] = Field(..., description="选择角色列表")
+    roles: List[RoleActive] = Field(..., description="选择角色列表")

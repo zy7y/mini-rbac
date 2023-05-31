@@ -1,4 +1,5 @@
 from pydantic import BaseModel, Field
+from typing import List
 
 from schemas.common import QueryData, ReadBase
 
@@ -7,7 +8,7 @@ class RoleMenuIn(BaseModel):
     """角色 -分配菜单id"""
 
     rid: int = Field(description="角色ID")
-    menus: list[int] = Field(description="菜单ID 列表")
+    menus: List[int] = Field(description="菜单ID 列表")
 
 
 class RoleMenuRead(RoleMenuIn, ReadBase):
@@ -20,7 +21,7 @@ class RoleBasic(BaseModel):
 
 
 class RoleIn(RoleBasic):
-    menus: list[int] = Field(..., description="菜单id列表")
+    menus: List[int] = Field(..., description="菜单id列表")
 
 
 class RoleRead(RoleBasic, ReadBase):
