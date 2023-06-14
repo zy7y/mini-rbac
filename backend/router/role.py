@@ -1,12 +1,13 @@
 from fastapi import APIRouter, Depends
 from typing import List
 
+from core.middleware import LogRoute
 from schemas import common as BaseSchema
 from schemas import role as RoleSchema
 from schemas.common import QueryData
 from service.role import service as RoleService
 
-router = APIRouter(prefix="/role", tags=["角色管理"])
+router = APIRouter(prefix="/role", tags=["角色管理"], route_class=LogRoute)
 
 Response = BaseSchema.Response
 ListAll = BaseSchema.ListAll

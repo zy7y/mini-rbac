@@ -1,10 +1,11 @@
 from fastapi import APIRouter
 
+from core.middleware import LogRoute
 from schemas import common as BaseSchema
 from schemas import menu as MenuSchema
 from service.menu import service as MenuService
 
-router = APIRouter(prefix="/menu", tags=["菜单管理"])
+router = APIRouter(prefix="/menu", tags=["菜单管理"], route_class=LogRoute)
 
 Response = BaseSchema.Response
 

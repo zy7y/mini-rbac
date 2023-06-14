@@ -1,9 +1,10 @@
 from fastapi import APIRouter, WebSocket
 
+from core.middleware import LogRoute
 from schemas import common as BaseSchema
 from service import auth as AuthService
 
-router = APIRouter(tags=["公共"])
+router = APIRouter(tags=["公共"], route_class=LogRoute)
 
 
 LoginResult = BaseSchema.Response[BaseSchema.LoginResult]
