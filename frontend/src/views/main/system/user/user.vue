@@ -3,7 +3,7 @@ import { ref, reactive, onMounted } from 'vue'
 
 import Table from '@/components/table/table.vue'
 
-import { getUsers, queryUser, delUser } from '@/service/user'
+import { getUsers, queryUser, delUser } from '@/apis/user'
 
 import { columns } from './conf'
 import UserSearch from './user-search.vue'

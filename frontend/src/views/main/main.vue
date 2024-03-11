@@ -1,8 +1,8 @@
 <script setup>
 import { ref } from 'vue'
 
-import SiderMenu from '@/components/layout/sider-menu.vue'
-import Header from '@/components/layout/header.vue'
+import SiderMenu from '@/layout/sider-menu.vue'
+import Header from '@/layout/header.vue'
 
 // a-ayout-sider 折叠状态响应式数据
 const collapsed = ref(false)

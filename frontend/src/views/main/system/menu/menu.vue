@@ -2,7 +2,7 @@
 import { ref, reactive, toRefs, onMounted } from 'vue'
 
 import { columns } from './conf'
-import { delMenu, getMenus } from '@/service/menu'
+import { delMenu, getMenus } from '@/apis/menu'
 
 import Table from '@/components/table/table.vue'
 import MenuModal from './menu-modal.vue'

@@ -1,7 +1,7 @@
 import { userStore } from '@/stores/user'
 
 export default (app) => {
-  // 按钮权限
+  // 按钮权限:
   app.directive('per', {
     mounted(el, binding) {
       if (

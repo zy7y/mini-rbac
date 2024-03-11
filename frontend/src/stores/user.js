@@ -4,7 +4,7 @@ import { message } from 'ant-design-vue'
 
 import router from '@/router'
 import { loadRouter, getPermissions } from '@/utils/loadCpn'
-import { getMenus, getUserInfo, login, selectRole } from '@/service/user'
+import { getMenus, getUserInfo, login, selectRole } from '@/apis/user'
 
 export const userStore = defineStore(
   'user',

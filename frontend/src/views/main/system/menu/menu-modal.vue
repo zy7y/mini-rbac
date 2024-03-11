@@ -2,7 +2,7 @@
 import { reactive, watch, toRefs } from 'vue'
 import useModal from '@/hooks/useModal'
 import { menuTypeMap, methodMap, iconMap, rules } from './conf'
-import { getMenus, addMenu, putMenu } from '@/service/menu'
+import { getMenus, addMenu, putMenu } from '@/apis/menu'
 import { userStore } from '@/stores/user'
 import { messageTip } from '@/utils'
 

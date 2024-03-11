@@ -2,7 +2,7 @@
 import { ref, reactive, onMounted, toRefs } from 'vue'
 import Table from '@/components/table/table.vue'
 
-import { getRoles, queryRole, delRole } from '@/service/role'
+import { getRoles, queryRole, delRole } from '@/apis/role'
 import { columns } from './conf'
 import RoleSearch from './role-search.vue'
 import RoleModal from './role-modal.vue'

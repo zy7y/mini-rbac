@@ -1,9 +1,9 @@
 <script setup>
 import { ref, reactive, watch } from 'vue'
 import { rules, treeFieldNames } from './conf'
-import { addRole, putRole } from '@/service/role'
-import { getMenus as getRoleMenu } from '@/service/user'
-import { getMenus } from '@/service/menu'
+import { addRole, putRole } from '@/apis/role'
+import { getMenus as getRoleMenu } from '@/apis/user'
+import { getMenus } from '@/apis/menu'
 import { userStore } from '@/stores/user'
 
 import useModal from '@/hooks/useModal'
