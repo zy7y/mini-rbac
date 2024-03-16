@@ -3,19 +3,21 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
+console.log('current routes is ', router.getRoutes())
+
 const toHome = () => {
-  router.push('/')
+    router.push('/')
 }
 </script>
 
 <template>
-  <div>
-    <a-result status="404" title="404" sub-title="页面找不到~">
-      <template #extra>
-        <a-button type="primary" @click="toHome"> Back Home </a-button>
-      </template>
-    </a-result>
-  </div>
+    <div>
+        <a-result status="404" title="404" sub-title="页面找不到~">
+            <template #extra>
+                <a-button type="primary" @click="toHome"> Back Home </a-button>
+            </template>
+        </a-result>
+    </div>
 </template>
 
 <style scoped></style>

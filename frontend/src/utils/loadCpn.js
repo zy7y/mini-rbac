@@ -21,7 +21,6 @@ function loadRouter(menus) {
     //   type 为1 菜单组件
     if (menu.type === 1 && menu.path !== '') {
       const cnpPath = `../views/main${menu.component}`
-
       router.addRoute('main', {
         path: menu.path,
         name: menu.name,

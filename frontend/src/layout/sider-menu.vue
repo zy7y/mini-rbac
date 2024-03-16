@@ -20,9 +20,9 @@
                         <template v-for="sub in menu.children" :key="sub.id">
                             <a-menu-item @click="menuClick(sub)">
                                 <template #icon>
-                                    <componea-menunt
+                                    <component
                                         :is="$loadIconCpn(sub.icon)"
-                                    ></componea-menunt>
+                                    ></component>
                                 </template>
                                 <span>{{ sub.name }}</span>
                             </a-menu-item>

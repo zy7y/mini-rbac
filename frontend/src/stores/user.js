@@ -1,106 +1,98 @@
-import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { message } from 'ant-design-vue'
-
 import router from '@/router'
 import { loadRouter, getPermissions } from '@/utils/loadCpn'
 import { getMenus, getUserInfo, login, selectRole } from '@/apis/user'
 
-export const userStore = defineStore(
-  'user',
-  () => {
-    const token = ref('')
-    const userInfo = ref({})
-    const userMenus = ref([])
-    const permissions = ref([])
+export const userStore = defineStore('user', {
+    state: () => {
+        // 初始化加载用户菜单路由：防止刷新404
+        // if (localStorage.getItem('userMenus')) {
+        //     loadRouter(JSON.parse(localStorage.getItem('userMenus')))
+        // }
+        return {
+            token: localStorage.getItem('token')
+                ? localStorage.getItem('token')
+                : '',
+            userInfo: localStorage.getItem('userInfo')
+                ? JSON.parse(localStorage.getItem('userInfo'))
+                : {},
+            userMenus: localStorage.getItem('userMenus')
+                ? JSON.parse(localStorage.getItem('userMenus'))
+                : [],
+            permissions: localStorage.getItem('permissions')
+                ? JSON.parse(localStorage.getItem('permissions'))
+                : [],
+            selectKey: localStorage.getItem('selectKey')
+                ? JSON.parse(localStorage.getItem('selectKey'))
+                : [],
+            isLoading: localStorage.getItem('isLoading')
+                ? JSON.parse(localStorage.getItem('isLoading'))
+                : false,
+            isPush: localStorage.getItem('isPush')
+                ? JSON.parse(localStorage.getItem('isPush'))
+                : false,
+        }
+    },
+    getters: {
+        accessToken: (state) => 'Bearer ' + state.token,
+    },
+    actions: {
+        increment() {
+            this.count++
+        },
+        reset() {
+            this.token = ''
+            this.userInfo = {}
+            this.userMenus = []
+            this.permissions = []
+            this.selectKey = []
+            localStorage.clear()
+        },
+        async getUserData(uid) {
+            const info = await getUserInfo(uid)
+            this.userInfo = info.data
+            localStorage.setItem('userInfo', JSON.stringify(info.data))
+            // 3. 获取权限信息
+            const menus = await getMenus(info.data.roles[0].id)
+            this.userMenus = menus.data
+            localStorage.setItem('userMenus', JSON.stringify(menus.data))
 
-    const selectKey = ref(null)
+            // 3.1 加载路由权限
+            loadRouter(menus.data)
 
-    const isLoading = ref(false)
+            // 3.2 加载按钮权限
+            const [btnPermissions, firstMenu] = getPermissions(menus.data)
+            this.permissions = btnPermissions
+            localStorage.setItem('permissions', JSON.stringify(btnPermissions))
 
-    const isPush = ref(false)
+            // 3.2 默认打开菜单
+            this.selectKey = [firstMenu.id]
+            localStorage.setItem('selectKey', JSON.stringify([firstMenu.id]))
 
-    // getter
-    const accessToken = computed(() => 'Bearer ' + token.value)
-
-    // setup store 不提供$reset 需要自己重置
-    // https://github.com/vuejs/pinia/issues/1056
-    const $reset = () => {
-      token.value = ''
-      userInfo.value = {}
-      userMenus.value = []
-      permissions.value = []
-    }
-
-    /**
-     * 获取用户信息 & 菜单路由
-     * @param {*} uid 用户id
-     */
-    const getUserData = async (uid) => {
-      // 2. 获取用户信息
-      const info = await getUserInfo(uid)
-      userInfo.value = info.data
-
-      // 3. 获取权限信息
-      const menus = await getMenus(info.data.roles[0].id)
-      userMenus.value = menus.data
-
-      // 3.1 加载路由权限
-      loadRouter(menus.data)
-
-      // 3.2 加载按钮权限
-      const [btnPermissions, firstMenu] = getPermissions(menus.data)
-      permissions.value = btnPermissions
-
-      // 3.2 默认打开菜单
-      selectKey.value = [firstMenu.id]
-
-      // 4. 跳转路由
-      if (firstMenu?.path) {
-        router.push(firstMenu.path)
-      } else {
-        router.push('/main')
-      }
-    }
-
-    const loginAction = async (data) => {
-      // 1. 登录
-      const res = await login(data)
-      token.value = res.data.token
-      await getUserData(res.data.id)
-      // 弹框提示登录成功
-      message.success('登录成功.')
-    }
-
-    // loadRouter 刷新问题
-    const loadRoleRouter = () => {
-      loadRouter(userMenus.value)
-    }
-
-    // 切换角色
-    const userSelectRole = async (rid) => {
-      await selectRole(rid)
-      // 重新拿用户信息
-      await getUserData(userInfo.value.id)
-    }
-
-    return {
-      isPush,
-      token,
-      accessToken,
-      userInfo,
-      userMenus,
-      permissions,
-      isLoading,
-      selectKey,
-      $reset,
-      getUserData,
-      loginAction,
-      loadRoleRouter,
-      userSelectRole
-    }
-  },
-  {
-    persist: true
-  }
-)
+            // 4. 跳转路由
+            if (firstMenu?.path) {
+                router.push(firstMenu.path)
+            } else {
+                router.push('/main')
+            }
+        },
+        async loginAction(data) {
+            // 1. 登录
+            const res = await login(data)
+            this.token = res.data.token
+            localStorage.setItem('token', res.data.token)
+            await this.getUserData(res.data.id)
+            // 弹框提示登录成功
+            message.success('登录成功.')
+        },
+        loadRoleRouter() {
+            loadRouter(this.userMenus)
+        },
+        async userSelectRole(rid) {
+            await selectRole(rid)
+            // 重新拿用户信息
+            await this.getUserData(this.userInfo.id)
+        },
+    },
+})

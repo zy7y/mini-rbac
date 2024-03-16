@@ -28,7 +28,7 @@ const submitForm = (formEl) => {
 <template>
   <div class="login">
     <div class="continer">
-      <h1>Mini RBAC</h1>
+      <h1>学生管理系统</h1>
 
       <a-form ref="formRef" :model="formData" :rules="loginRules">
         <a-form-item has-feedback name="username">

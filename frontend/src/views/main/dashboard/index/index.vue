@@ -1,6 +1,5 @@
 <script setup>
 import { onUnmounted, reactive, toRefs } from 'vue'
-
 import EachartView from '@/components/echart/eachart-view.vue'
 import MarkdownView from '@/components/markdown/preview-view.vue'
 
