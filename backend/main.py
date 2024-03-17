@@ -16,4 +16,4 @@ app = FastAPI(
 load_routers(app, "router", no_depends="auth", depends=[Depends(check_permissions)])
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("main:app", port=8000, reload=True)
