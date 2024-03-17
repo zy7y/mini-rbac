@@ -32,6 +32,9 @@ export const userStore = defineStore('user', {
             isPush: localStorage.getItem('isPush')
                 ? JSON.parse(localStorage.getItem('isPush'))
                 : false,
+            callapse: localStorage.getItem('callapse')
+                ? JSON.parse(localStorage.getItem('callapse'))
+                : false,
         }
     },
     getters: {
@@ -93,6 +96,10 @@ export const userStore = defineStore('user', {
             await selectRole(rid)
             // 重新拿用户信息
             await this.getUserData(this.userInfo.id)
+        },
+        setCallapse(flag) {
+            this.callapse = flag
+            localStorage.setItem('callapse', flag)
         },
     },
 })

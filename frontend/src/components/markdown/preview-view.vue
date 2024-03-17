@@ -14,7 +14,7 @@ const backend = `
 🔐 JWT认证：[python-jose](https://python-jose.readthedocs.io/en/latest/)
 `
 const info = `
-🎉 [MiniRBAC](https://github.com/zy7y/mini-rbac)
+基于角色的访问控制模型的性能增强
 ✅ 前端菜单权限
 ✅ 前端路由权限
 ✅ 前端按钮权限
@@ -31,22 +31,22 @@ const forntend = `
 </script>
 
 <template>
-  <div class="content">
-    <Card title="🖥️前端">
-      <Markdown :text="forntend" />
-    </Card>
-    <Card title="🎯控制">
-      <Markdown :text="info" />
-    </Card>
-    <Card title="🌐后端">
-      <Markdown :text="backend" />
-    </Card>
-  </div>
+    <div class="content">
+        <Card title="🖥️前端">
+            <Markdown :text="forntend" />
+        </Card>
+        <Card title="🎯控制">
+            <Markdown :text="info" />
+        </Card>
+        <Card title="🌐后端">
+            <Markdown :text="backend" />
+        </Card>
+    </div>
 </template>
 
 <style scoped>
 .content {
-  display: flex;
-  justify-content: space-between;
+    display: flex;
+    justify-content: space-between;
 }
 </style>

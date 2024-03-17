@@ -1,6 +1,5 @@
 <script setup>
 import { ref } from 'vue'
-
 import SiderMenu from '@/layout/sider-menu.vue'
 import Header from '@/layout/header.vue'
 

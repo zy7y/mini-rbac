@@ -40,7 +40,7 @@ export const columns = [
 export const addUserRules = {
   username: [
     { required: true, message: '请输入用户名', trigger: 'blur' },
-    { min: 5, max: 20, message: '5~20', trigger: 'blur' }
+    { min: 2, max: 20, message: '2~20', trigger: 'blur' }
   ],
   password: [
     { required: true, message: '请输入密码', trigger: 'blur' },
@@ -48,7 +48,7 @@ export const addUserRules = {
   ],
   nickname: [
     { required: true, message: '请输入昵称', trigger: 'blur' },
-    { min: 5, max: 20, message: '5~20', trigger: 'blur' }
+    { min: 2, max: 20, message: '2~20', trigger: 'blur' }
   ],
   roles: [{ required: true, message: '请配置角色', trigger: 'blur' }]
 }
@@ -61,7 +61,7 @@ export const putUserRules = {
   ],
   nickname: [
     { required: true, message: '请输入昵称', trigger: 'blur' },
-    { min: 5, max: 20, message: '5~20', trigger: 'blur' }
+    { min: 5, max: 20, message: '2~20', trigger: 'blur' }
   ],
   roles: [{ required: true, message: '请配置角色', trigger: 'blur' }]
 }

@@ -1,6 +1,7 @@
 <template>
     <div class="sider-menu">
-        <div class="logo"></div>
+        <div v-if="store.callapse" class="callapse"></div>
+        <div v-else class="logo">学生管理系统</div>
         <a-menu
             theme="dark"
             mode="inline"
@@ -54,12 +55,22 @@ const menuClick = (menu) => {
     /* display: flex; */
     /* width: 100%; */
     height: 32px;
-    background: rgba(255, 255, 255, 0.3) url('@/assets/img/fastapi.svg');
+    /* background: rgba(255, 255, 255, 0.3) url('@/assets/img/logo.jpg'); */
     margin: 16px;
     background-size: 100% 100%;
     color: white;
     font-size: 26px;
     text-align: center;
     font-weight: bold;
+}
+
+
+.callapse{
+      /* display: flex; */
+    /* width: 100%; */
+    height: 44px;
+    background-image: url('@/assets/img/logo.png');
+    margin: 16px;
+    background-size: 100% 100%;
 }
 </style>

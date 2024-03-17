@@ -2,6 +2,9 @@
 import { ref } from 'vue'
 import UserInfo from '@/layout/right/info.vue'
 import HeaderCrumb from './header-crumb.vue'
+import { userStore } from '@/stores/user'
+
+const store = userStore()
 
 // 记录图标状态
 const collapsed = ref(false)
@@ -12,6 +15,7 @@ const emits = defineEmits(['changeFold'])
 const clickMenuFold = () => {
   collapsed.value = !collapsed.value
   // 父组件需要绑定这个事件
+  store.setCallapse(collapsed.value)
   emits('changeFold', collapsed.value)
 }
 </script>

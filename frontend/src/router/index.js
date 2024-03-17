@@ -43,9 +43,9 @@ router.beforeEach((to) => {
     }
 })
 
-router.afterEach((next) => {
-    // 修改页面标题
-    document.title = next.name || 'Mini RBAC'
-})
+// router.afterEach((next) => {
+//     // 修改页面标题
+//     // document.title = next.name || '学生管理系统'
+// })
 
 export default router
