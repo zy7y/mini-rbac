@@ -24,32 +24,32 @@ const options = computed(() => {
     const gaugeData = [
         {
             value: props.cpuValue,
-            name: 'CPU',
+            name: '数学',
             title: {
-                offsetCenter: ['-60%', '80%'],
+                offsetCenter: ['-60%', '99%'],
             },
             detail: {
-                offsetCenter: ['-60%', '95%'],
+                offsetCenter: ['-60%', '120%'],
             },
         },
         {
             value: props.memoryValue,
-            name: 'MEMORY',
+            name: '英语',
             title: {
-                offsetCenter: ['0%', '80%'],
+                offsetCenter: ['0%', '99%'],
             },
             detail: {
-                offsetCenter: ['0%', '95%'],
+                offsetCenter: ['0%', '120%'],
             },
         },
         {
             value: props.diskValue,
-            name: 'DISK',
+            name: '计算机',
             title: {
-                offsetCenter: ['60%', '80%'],
+                offsetCenter: ['60%', '99%'],
             },
             detail: {
-                offsetCenter: ['60%', '95%'],
+                offsetCenter: ['60%', '120%'],
             },
         },
     ]

@@ -37,7 +37,7 @@ const options = computed(() => {
         },
         series: [
             {
-                name: 'RPS',
+                name: '数学',
                 type: 'line',
                 zlevel: 0,
                 z: 2,
@@ -45,7 +45,7 @@ const options = computed(() => {
                 data: props.rps,
             },
             {
-                name: 'RT (ms)',
+                name: '英语',
                 type: 'line',
                 zlevel: 0,
                 z: 2,
@@ -53,7 +53,7 @@ const options = computed(() => {
                 data: props.time,
             },
             {
-                name: 'User',
+                name: '计算机',
                 type: 'line',
                 zlevel: 0,
                 z: 2,

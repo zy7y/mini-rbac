@@ -6,6 +6,8 @@ import { userStore } from '@/stores/user'
 import { getRoles } from '@/apis/role'
 import useModal from '@/hooks/useModal'
 import { messageTip } from '@/utils'
+import dayjs from 'dayjs'
+import locale from 'ant-design-vue/es/date-picker/locale/zh_CN'
 import { message } from 'ant-design-vue'
 
 const props = defineProps({
@@ -31,6 +33,7 @@ const newUserForm = reactive({
     username: '',
     nickname: '',
     password: '',
+    limit_time: [],
     roles: [],
 })
 
@@ -38,6 +41,7 @@ const newUserForm = reactive({
 const putUserForm = reactive({
     nickname: '',
     password: '',
+    limit_time: [],
     roles: [],
 })
 
@@ -64,6 +68,10 @@ const openModal = async (record) => {
     // 昵称信息
     putUserForm.nickname = res.data.nickname
     putUserForm.password = '加密之后的密码'
+    // 开始时间和结束时间
+    putUserForm.limit_time = res.data.limit_start
+        ? [dayjs(res.data.limit_start), dayjs(res.data.limit_end)]
+        : []
 }
 
 // 点击modal 确定
@@ -72,12 +80,28 @@ const onOk = () => {
         let res
         let flag = false
         if (props.modalType === 'create') {
+            const limit_start = newUserForm.limit_time[0]
+                ? newUserForm.limit_time[0]?.valueOf() || null
+                : null
+            const limit_end = newUserForm.limit_time[1]
+                ? newUserForm.limit_time[1]?.valueOf() || null
+                : null
+            console.log('form values is', limit_start, limit_end)
             newUserForm.roles = newUserForm.roles.map((e, i) => ({
                 rid: e,
                 status: i === 0 ? 5 : 1,
             }))
+            newUserForm.limit_start = limit_start
+            newUserForm.limit_end = limit_end
             res = await addUser(newUserForm)
         } else {
+            const limit_start = putUserForm.limit_time
+                ? putUserForm.limit_time[0]?.valueOf() || null
+                : null
+            const limit_end = putUserForm.limit_time
+                ? putUserForm.limit_time[1]?.valueOf() || null
+                : null
+            console.log('form values is', limit_start, limit_end)
             const { nickname, password, roles } = putUserForm
             let rids = roles.map((e, i) => ({
                 rid: e,
@@ -86,6 +110,8 @@ const onOk = () => {
             res = await putUser(updateId.value, {
                 nickname,
                 password,
+                limit_start,
+                limit_end,
                 roles: rids,
             })
             if (updateId.value === store.userInfo.id) {
@@ -108,6 +134,9 @@ const onCancel = () => {
     formRef.value.resetFields()
 }
 
+// labelCss
+const labelCss = { span: 3, offset: 0 }
+
 defineExpose({ showModal, openModal })
 </script>
 
@@ -127,6 +156,7 @@ defineExpose({ showModal, openModal })
                     ref="formRef"
                     :model="newUserForm"
                     :rules="addUserRules"
+                    :labelCol="labelCss"
                 >
                     <a-form-item name="username" label="账号">
                         <a-input
@@ -141,6 +171,14 @@ defineExpose({ showModal, openModal })
                         <a-input-password
                             v-model:value="newUserForm.password"
                             autocomplete="on"
+                        />
+                    </a-form-item>
+                    <a-form-item name="limit_time" label="限制">
+                        <a-time-range-picker
+                            :locale="locale"
+                            v-model:value="newUserForm.limit_time"
+                            format="HH:mm"
+                            class="limitTime"
                         />
                     </a-form-item>
                     <a-form-item name="roles" label="角色">
@@ -161,6 +199,7 @@ defineExpose({ showModal, openModal })
                     ref="formRef"
                     :model="putUserForm"
                     :rules="putUserRules"
+                    :labelCol="labelCss"
                 >
                     <a-form-item name="nickname" label="昵称">
                         <a-input v-model:value="putUserForm.nickname" />
@@ -169,6 +208,14 @@ defineExpose({ showModal, openModal })
                         <a-input-password
                             v-model:value="putUserForm.password"
                             autocomplete="on"
+                        />
+                    </a-form-item>
+                    <a-form-item name="limit_time" label="限制">
+                        <a-time-range-picker
+                            :locale="locale"
+                            v-model:value="putUserForm.limit_time"
+                            format="HH:mm"
+                            class="limitTime"
                         />
                     </a-form-item>
                     <a-form-item name="roles" label="角色">
@@ -186,4 +233,8 @@ defineExpose({ showModal, openModal })
     </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.limitTime {
+    width: 100%;
+}
+</style>

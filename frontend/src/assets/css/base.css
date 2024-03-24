@@ -1,5 +1,11 @@
 html,
 #app {
-  height: 100%;
-  width: 100%;
+    height: 100%;
+    width: 100%;
+}
+
+input:-webkit-autofill {
+    background: transparent;
+    transition: background-color 50000s ease-in-out 0s;
+    -webkit-text-fill-color: unset;
 }

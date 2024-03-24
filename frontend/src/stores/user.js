@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { message } from 'ant-design-vue'
 import router from '@/router'
+import dayjs from 'dayjs'
 import { loadRouter, getPermissions } from '@/utils/loadCpn'
 import { getMenus, getUserInfo, login, selectRole } from '@/apis/user'
 
@@ -55,6 +56,42 @@ export const userStore = defineStore('user', {
         async getUserData(uid) {
             const info = await getUserInfo(uid)
             this.userInfo = info.data
+            // check user limit time is ok
+            const limit_start = info.data.limit_start
+                ? dayjs(info.data.limit_start)
+                : ''
+            const limit_end = info.data.limit_end
+                ? dayjs(info.data.limit_end)
+                : ''
+            var currentTime = new Date()
+            var hours = currentTime.getHours()
+            var minutes = currentTime.getMinutes()
+            if (limit_start) {
+                if (hours < limit_start.hour()) {
+                    localStorage.clear()
+                    message.error('用户不在可用时间段内1')
+                    return
+                } else if (hours === limit_start.hour()) {
+                    if (hours < limit_start.minute()) {
+                        localStorage.clear()
+                        message.error('用户不在可用时间段内2')
+                        return
+                    }
+                }
+            }
+            if (limit_end) {
+                if (hours > limit_end.hour()) {
+                    localStorage.clear()
+                    message.error('用户不在可用时间段内3')
+                    return
+                } else if (hours === limit_end.hour()) {
+                    if (minutes > limit_end.minute()) {
+                        localStorage.clear()
+                        message.error('用户不在可用时间段内3')
+                        return
+                    }
+                }
+            }
             localStorage.setItem('userInfo', JSON.stringify(info.data))
             // 3. 获取权限信息
             const menus = await getMenus(info.data.roles[0].id)
@@ -72,22 +109,24 @@ export const userStore = defineStore('user', {
             // 3.2 默认打开菜单
             this.selectKey = [firstMenu.id]
             localStorage.setItem('selectKey', JSON.stringify([firstMenu.id]))
-
             // 4. 跳转路由
             if (firstMenu?.path) {
                 router.push(firstMenu.path)
             } else {
                 router.push('/main')
             }
+            return true
         },
         async loginAction(data) {
             // 1. 登录
             const res = await login(data)
             this.token = res.data.token
             localStorage.setItem('token', res.data.token)
-            await this.getUserData(res.data.id)
-            // 弹框提示登录成功
-            message.success('登录成功.')
+            const check = await this.getUserData(res.data.id)
+            if (check) {
+                // 弹框提示登录成功
+                message.success('登录成功')
+            }
         },
         loadRoleRouter() {
             loadRouter(this.userMenus)
